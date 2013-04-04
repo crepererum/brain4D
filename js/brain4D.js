@@ -1,18 +1,36 @@
+/*jslint browser: true, devel: true, bitwise: true, plusplus: true, white: true */
+
+var rotMatrix = mat4.create();
+var mouseActive = false;
+var transVec = vec4.create();
+var wAxis = 1;
+
+var lastX;
+var lastY;
+
+var gl;
+var shaderProgram;
+var vbuffer;
+var vertices;
+
 function getShader(gl, id) {
-	var shaderScript = document.getElementById(id);
-	var str = "";
-	var k = shaderScript.firstChild;
+	'use strict';
+	var k, shader, shaderScript, str;
+
+	shaderScript = document.getElementById(id);
+	str = "";
+	k = shaderScript.firstChild;
+
 	while (k) {
-		if (k.nodeType == 3) {
+		if (k.nodeType === 3) {
 			str += k.textContent;
 		}
 		k = k.nextSibling;
 	}
 
-	var shader;
-	if (shaderScript.type == "x-shader/x-fragment") {
+	if (shaderScript.type === "x-shader/x-fragment") {
 		shader = gl.createShader(gl.FRAGMENT_SHADER);
-	} else if (shaderScript.type == "x-shader/x-vertex") {
+	} else if (shaderScript.type === "x-shader/x-vertex") {
 		shader = gl.createShader(gl.VERTEX_SHADER);
 	} else {
 		return null;
@@ -30,18 +48,25 @@ function getShader(gl, id) {
 }
 
 function genProjectionMatrix(width, height) {
-	var result = mat4.create();
-	var factor1 = width / Math.min(width, height);
-	var factor2 = height / Math.min(width, height);
+	'use strict';
+	var factor1, factor2, result;
+
+	result = mat4.create();
+	factor1 = width / Math.min(width, height);
+	factor2 = height / Math.min(width, height);
 	mat4.ortho(result, -1.5 * factor1, 1.5 * factor1, -1.5 * factor2, 1.5 * factor2, -100, 100);
+
 	return result;
 }
 
 function genRotationMatrix(x, y, z) {
-	var result = mat4.create();
+	'use strict';
+	var result, tmp;
+
+	result = mat4.create();
 	mat4.rotateX(result, result, x);
 	mat4.rotateY(result, result, y);
-	var tmp = mat4.create();
+	tmp = mat4.create();
 	if (wAxis === 0) {
 		tmp.set([
 				Math.cos(z), 0.0, 0.0, -Math.sin(z),
@@ -65,10 +90,13 @@ function genRotationMatrix(x, y, z) {
 				]);
 	}
 	mat4.multiply(result, result, tmp);
+
 	return result;
 }
 
 function draw() {
+	'use strict';
+
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -83,32 +111,24 @@ function draw() {
 }
 
 function readFile(path, callback) {
+	'use strict';
+
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
+		if (xhr.readyState === 4) {
 			var resp = xhr.responseText;
 			callback(resp);
 		}
-	}
+	};
 	xhr.open("GET", path, true);
 	xhr.send();
 }
 
-var rotMatrix = mat4.create();
-var mouseActive = false;
-var transVec = vec4.create();
-var wAxis = 1;
-
-var lastX;
-var lastY;
-
-var gl;
-var shaderProgram;
-var vbuffer;
-var vertices;
-
 function init() {
-	var canvas = document.getElementById("glcanvas");
+	'use strict';
+	var canvas, fragmentShader, vertexShader;
+
+	canvas = document.getElementById("glcanvas");
 	canvas.width = canvas.clientWidth;
 	canvas.height = canvas.clientHeight;
 	gl = canvas.getContext("experimental-webgl");
@@ -116,8 +136,8 @@ function init() {
 	gl.viewportHeight = canvas.height;
 	gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
 
-	var fragmentShader = getShader(gl, "shader-fs");
-	var vertexShader = getShader(gl, "shader-vs");
+	fragmentShader = getShader(gl, "shader-fs");
+	vertexShader = getShader(gl, "shader-vs");
 	shaderProgram = gl.createProgram();
 	gl.attachShader(shaderProgram, vertexShader);
 	gl.attachShader(shaderProgram, fragmentShader);
@@ -162,45 +182,51 @@ function init() {
 
 	canvas.addEventListener("mousemove", function(evt){
 			if (mouseActive) {
-				var dX = evt.clientX - lastX;
-				var dY = evt.clientY - lastY;
+				var dX, dY, dVec, dMatrix;
+
+				dX = evt.clientX - lastX;
+				dY = evt.clientY - lastY;
 				lastX = evt.clientX;
 				lastY = evt.clientY;
 
 				if (evt.shiftKey) {
-					var dVec = vec4.create();
+					dVec = vec4.create();
 					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
 					vec4.add(transVec, transVec, dVec);
 				} else if (evt.ctrlKey) {
-					var dMatrix = mat4.create();
+					dMatrix = mat4.create();
 					dMatrix[0] += dX / gl.viewportWidth;
 					dMatrix[5] -= dY / gl.viewportHeight;
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 				} else {
-					var dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
+					dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 				}
 			}
-			}, false)
+			}, false);
 
 	canvas.addEventListener("mousewheel", function(evt){
+			var dVec, dMatrix;
+
 			evt.preventDefault();
+
 			if (evt.shiftKey) {
-				var dVec = vec4.create();
-				dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0])
+				dVec = vec4.create();
+				dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0]);
 				vec4.add(transVec, transVec, dVec);
 			} else if(evt.altKey) {
-					var dMatrix = mat4.create();
-					dMatrix[15] += evt.wheelDelta / 1000.0;
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
+				dMatrix = mat4.create();
+				dMatrix[15] += evt.wheelDelta / 1000.0;
+				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+				vec4.transformMat4(transVec, transVec, dMatrix);
 			} else {
-				var dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
+				dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
 				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 				vec4.transformMat4(transVec, transVec, dMatrix);
 			}
+
 			return false;
 			}, false);
 
@@ -208,15 +234,20 @@ function init() {
 }
 
 window.onload = function() {
+	'use strict';
+
 	readFile("data/breast_pca.csv", function(raw){
-		var parsedData = CSV.csvToArray(raw);
-		vertices = Array(parsedData.length * 4);
-		for (var i = 0; i < parsedData.length; ++i) {
-			for (var j = 0; j < 4; ++j) {
+		var i, j, parsedData;
+
+		parsedData = CSV.csvToArray(raw);
+		vertices = [];
+		for (i = 0; i < parsedData.length; ++i) {
+			for (j = 0; j < 4; ++j) {
 				vertices[i * 4 + j] = parseFloat(parsedData[i][j]);
 			}
 		}
+
 		init();
 	});
-}
+};
 
