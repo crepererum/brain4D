@@ -82,12 +82,16 @@ function draw() {
 	window.requestAnimationFrame(draw);
 }
 
-function genRandomVertices(n) {
-	var result = Array(n * 4);
-	for (var i = 0; i < n; ++i) {
-		result[i] = Math.random() * 2.0 - 1.0;
+function readFile(path, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var resp = xhr.responseText;
+			callback(resp);
+		}
 	}
-	return result;
+	xhr.open("GET", path, true);
+	xhr.send();
 }
 
 var rotMatrix = mat4.create();
@@ -101,6 +105,7 @@ var lastY;
 var gl;
 var shaderProgram;
 var vbuffer;
+var vertices;
 
 function init() {
 	var canvas = document.getElementById("glcanvas");
@@ -129,7 +134,6 @@ function init() {
 
 	vbuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
-	var vertices = genRandomVertices(1000);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	vbuffer.itemSize = 4;
 	vbuffer.numItems = vertices.length / 4;
@@ -203,5 +207,16 @@ function init() {
 	window.requestAnimationFrame(draw);
 }
 
-window.onload = init;
+window.onload = function() {
+	readFile("data/breast_pca.csv", function(raw){
+		var parsedData = CSV.csvToArray(raw);
+		vertices = Array(parsedData.length * 4);
+		for (var i = 0; i < parsedData.length; ++i) {
+			for (var j = 0; j < 4; ++j) {
+				vertices[i * 4 + j] = parseFloat(parsedData[i][j]);
+			}
+		}
+		init();
+	});
+}
 
