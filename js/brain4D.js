@@ -42,12 +42,28 @@ function genRotationMatrix(x, y, z) {
 	mat4.rotateX(result, result, x);
 	mat4.rotateY(result, result, y);
 	var tmp = mat4.create();
-	tmp.set([
-			1.0, 0.0, 0.0, 0.0,
-			0.0, Math.cos(z), 0.0, -Math.sin(z),
-			0.0, 0.0, 1.0, 0.0,
-			0.0, Math.sin(z), 0.0, Math.cos(z)
-			]);
+	if (wAxis === 0) {
+		tmp.set([
+				Math.cos(z), 0.0, 0.0, -Math.sin(z),
+				0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0,
+				Math.sin(z), 0.0, 0.0, Math.cos(z)
+				]);
+	} else if (wAxis === 1) {
+		tmp.set([
+				1.0, 0.0, 0.0, 0.0,
+				0.0, Math.cos(z), 0.0, -Math.sin(z),
+				0.0, 0.0, 1.0, 0.0,
+				0.0, Math.sin(z), 0.0, Math.cos(z)
+				]);
+	} else {
+		tmp.set([
+				1.0, 0.0, 0.0, 0.0,
+				0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, Math.cos(z), -Math.sin(z),
+				0.0, 0.0, Math.sin(z), Math.cos(z)
+				]);
+	}
 	mat4.multiply(result, result, tmp);
 	return result;
 }
@@ -77,6 +93,7 @@ function genRandomVertices(n) {
 var rotMatrix = mat4.create();
 var mouseActive = false;
 var transVec = vec4.create();
+var wAxis = 1;
 
 var lastX;
 var lastY;
@@ -128,6 +145,8 @@ function init() {
 				lastX = evt.clientX;
 				lastY = evt.clientY;
 				mouseActive = true;
+			} else if (evt.which === 2) {
+				wAxis = (wAxis + 1) % 3;
 			}
 			}, false);
 
