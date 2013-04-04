@@ -1,4 +1,5 @@
 /*jslint browser: true, devel: true, bitwise: true, plusplus: true, white: true */
+var mode = 1;
 
 var rotMatrix = mat4.create();
 var mouseActive = false;
@@ -124,6 +125,26 @@ function readFile(path, callback) {
 	xhr.send();
 }
 
+function setActive(x, namespace) {
+	'use strict';
+	var i, j, old, next;
+
+	old = document.getElementsByClassName("active");
+	for (i = 0; i < old.length; ++i) {
+		for (j = 0; j < old[i].classList.length; ++j) {
+			if (old[i].classList[j].indexOf(namespace) === 0) {
+				old[i].classList.remove("active");
+				break;
+			}
+		}
+	}
+
+	next = document.getElementsByClassName(namespace + x);
+	for (i = 0; i < next.length; ++i) {
+		next[i].classList.add("active");
+	}
+}
+
 function init() {
 	'use strict';
 	var canvas, fragmentShader, vertexShader;
@@ -164,6 +185,28 @@ function init() {
 	gl.enable(gl.BLEND);
 	gl.enable(gl.POINTS_SMOOTH);
 
+	document.addEventListener("keypress", function(evt){
+		switch (evt.keyCode) {
+			// 1
+			case 49:
+				setActive(1, "mode");
+				mode = 1;
+				break;
+
+			// 2
+			case 50:
+				setActive(2, "mode");
+				mode = 2;
+				break;
+
+			// 3
+			case 51:
+				setActive(3, "mode");
+				mode = 3;
+				break;
+		}
+	}, false);
+
 	canvas.addEventListener("mousedown", function(evt){
 			if (evt.which === 1) {
 				lastX = evt.clientX;
@@ -171,6 +214,7 @@ function init() {
 				mouseActive = true;
 			} else if (evt.which === 2) {
 				wAxis = (wAxis + 1) % 3;
+				setActive(wAxis, "axis");
 			}
 			}, false);
 
@@ -189,20 +233,26 @@ function init() {
 				lastX = evt.clientX;
 				lastY = evt.clientY;
 
-				if (evt.shiftKey) {
-					dVec = vec4.create();
-					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
-					vec4.add(transVec, transVec, dVec);
-				} else if (evt.altKey || evt.ctrlKey) {
-					dMatrix = mat4.create();
-					dMatrix[0] += dX / gl.viewportWidth;
-					dMatrix[5] -= dY / gl.viewportHeight;
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
-				} else {
-					dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
+				switch (mode) {
+					case 1:
+						dVec = vec4.create();
+						dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
+						vec4.add(transVec, transVec, dVec);
+						break;
+
+					case 2:
+						dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
+						mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+						vec4.transformMat4(transVec, transVec, dMatrix);
+						break;
+
+					case 3:
+						dMatrix = mat4.create();
+						dMatrix[0] += dX / gl.viewportWidth;
+						dMatrix[5] -= dY / gl.viewportHeight;
+						mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+						vec4.transformMat4(transVec, transVec, dMatrix);
+						break;
 				}
 			}
 			}, false);
@@ -212,19 +262,25 @@ function init() {
 
 			evt.preventDefault();
 
-			if (evt.shiftKey) {
-				dVec = vec4.create();
-				dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0]);
-				vec4.add(transVec, transVec, dVec);
-			} else if(evt.altKey || evt.ctrlKey) {
-				dMatrix = mat4.create();
-				dMatrix[15] += evt.wheelDelta / 1000.0;
-				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-				vec4.transformMat4(transVec, transVec, dMatrix);
-			} else {
-				dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
-				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-				vec4.transformMat4(transVec, transVec, dMatrix);
+			switch (mode) {
+				case 1:
+					dVec = vec4.create();
+					dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0]);
+					vec4.add(transVec, transVec, dVec);
+					break;
+
+				case 2:
+					dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
+					break;
+
+				case 3:
+					dMatrix = mat4.create();
+					dMatrix[15] += evt.wheelDelta / 1000.0;
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
+					break;
 			}
 
 			return false;
@@ -235,6 +291,37 @@ function init() {
 
 window.onload = function() {
 	'use strict';
+	var reMode, reAxis, elementList, match, i, j;
+
+	elementList = document.getElementsByClassName("button");
+	reAxis = new RegExp("^axis(\\d+)$");
+	reMode = new RegExp("^mode(\\d+)$");
+	for (i = 0; i < elementList.length; ++i) {
+		for (j = 0; j < elementList[i].classList.length; ++j) {
+			match = reAxis.exec(elementList[i].classList[j]);
+			if (match) {
+				elementList[i].axisId = parseInt(match[1]);
+				elementList[i].addEventListener("mousedown", function(evt){
+					setActive(evt.target.axisId, "axis");
+					wAxis = evt.target.axisId;
+					return false;
+				}, false);
+			}
+
+			match = reMode.exec(elementList[i].classList[j]);
+			if (match) {
+				elementList[i].modeId = parseInt(match[1]);
+				elementList[i].addEventListener("mousedown", function(evt){
+					setActive(evt.target.modeId, "mode");
+					mode = evt.target.modeId;
+					return false;
+				}, false);
+			}
+		}
+	}
+
+	setActive(wAxis, "axis");
+	setActive(mode, "mode");
 
 	readFile("data/breast_pca.csv", function(raw){
 		var i, j, parsedData;

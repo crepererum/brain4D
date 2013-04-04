@@ -4,6 +4,33 @@ html, body {
 	width: 100%;
 }
 
+.active {
+	opacity: 1.0 !important;
+}
+
+.button {
+	cursor: pointer;
+}
+
+.buttonList {
+	padding: 0;
+}
+
+.buttonList li {
+	background: url(../img/button_background.png);
+	border: 1px grey solid;
+	border-radius: 6px;
+	display: inline-block;
+	font-weight: bold;
+	min-width: 20px;
+	padding: 5px;
+	text-align: center;
+}
+
+.switcher {
+	opacity: 0.5;
+}
+
 #clear {
 	clear: both;
 }
