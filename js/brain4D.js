@@ -193,7 +193,7 @@ function init() {
 					dVec = vec4.create();
 					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
 					vec4.add(transVec, transVec, dVec);
-				} else if (evt.ctrlKey) {
+				} else if (evt.altKey || evt.ctrlKey) {
 					dMatrix = mat4.create();
 					dMatrix[0] += dX / gl.viewportWidth;
 					dMatrix[5] -= dY / gl.viewportHeight;
@@ -216,7 +216,7 @@ function init() {
 				dVec = vec4.create();
 				dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0]);
 				vec4.add(transVec, transVec, dVec);
-			} else if(evt.altKey) {
+			} else if(evt.altKey || evt.ctrlKey) {
 				dMatrix = mat4.create();
 				dMatrix[15] += evt.wheelDelta / 1000.0;
 				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
