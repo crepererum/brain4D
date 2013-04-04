@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>brain4D</title>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="css/brain4D.css">
+		<script type="text/javascript" src="js/gl-matrix-min.js"></script>
+		<script type="text/javascript" src="js/brain4D.js"></script>
+		<script id="shader-fs" type="x-shader/x-fragment">
+			precision mediump float;
+
+			varying vec4 realPos;
+
+			void main(void) {
+				float red = 1.0;
+				float blue = 1.0;
+				float green = 1.0;
+				if (realPos[3] > 0.0) {
+					blue = 1.0 - realPos[3];
+					green = 1.0 - realPos[3];
+				} else {
+					red = 1.0 + realPos[3];
+					green = 1.0 + realPos[3];
+				}
+				gl_FragColor = vec4(red, green, blue, 1.0 - abs(realPos[3]));
+			}
+		</script>
+		<script id="shader-vs" type="x-shader/x-vertex">
+			attribute vec4 aVertexPosition;
+
+			uniform mat4 rotMatrix;
+			uniform vec4 transVec;
+			uniform mat4 projMatrix;
+
+			varying vec4 realPos;
+
+			void main(void) {
+				realPos = rotMatrix * aVertexPosition + transVec;
+				gl_Position = projMatrix * vec4(vec3(realPos), 1.0);
+				gl_PointSize = 4.0 + 2.0 * realPos[2];
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="glcanvas"></canvas>
+	</body>
+</html>
+
