@@ -167,6 +167,12 @@ function init() {
 					var dVec = vec4.create();
 					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
 					vec4.add(transVec, transVec, dVec);
+				} else if (evt.ctrlKey) {
+					var dMatrix = mat4.create();
+					dMatrix[0] += dX / gl.viewportWidth;
+					dMatrix[5] -= dY / gl.viewportHeight;
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
 				} else {
 					var dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
@@ -176,10 +182,16 @@ function init() {
 			}, false)
 
 	canvas.addEventListener("mousewheel", function(evt){
+			evt.preventDefault();
 			if (evt.shiftKey) {
 				var dVec = vec4.create();
 				dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0])
 				vec4.add(transVec, transVec, dVec);
+			} else if(evt.altKey) {
+					var dMatrix = mat4.create();
+					dMatrix[15] += evt.wheelDelta / 1000.0;
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
 			} else {
 				var dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
 				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
