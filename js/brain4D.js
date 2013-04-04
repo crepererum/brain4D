@@ -124,13 +124,17 @@ function init() {
 	gl.enable(gl.POINTS_SMOOTH);
 
 	canvas.addEventListener("mousedown", function(evt){
-			lastX = evt.clientX;
-			lastY = evt.clientY;
-			mouseActive = true;
+			if (evt.which === 1) {
+				lastX = evt.clientX;
+				lastY = evt.clientY;
+				mouseActive = true;
+			}
 			}, false);
 
-	canvas.addEventListener("mouseup", function(){
-			mouseActive = false;
+	canvas.addEventListener("mouseup", function(evt){
+			if (evt.which === 1) {
+				mouseActive = false;
+			}
 			}, false);
 
 	canvas.addEventListener("mousemove", function(evt){
