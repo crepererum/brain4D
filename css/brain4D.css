@@ -29,6 +29,12 @@ h2 {
 	z-index: 5;
 }
 
+.button img {
+	margin-right: 6px;
+	pointer-events: none;
+	vertical-align: sub;
+}
+
 .buttonList {
 	padding: 0;
 }
