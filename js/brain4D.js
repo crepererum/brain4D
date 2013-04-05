@@ -308,6 +308,7 @@ window.onload = function() {
 			if (match) {
 				elementList[i].axisId = parseInt(match[1]);
 				elementList[i].addEventListener("mousedown", function(evt){
+					evt.preventDefault();
 					setActive(evt.target.axisId, "axis");
 					wAxis = evt.target.axisId;
 					return false;
@@ -318,6 +319,7 @@ window.onload = function() {
 			if (match) {
 				elementList[i].modeId = parseInt(match[1]);
 				elementList[i].addEventListener("mousedown", function(evt){
+					evt.preventDefault();
 					setActive(evt.target.modeId, "mode");
 					mode = evt.target.modeId;
 					return false;
