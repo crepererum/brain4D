@@ -27,6 +27,42 @@ html, body {
 	padding: 0;
 }
 
+.logoB, .logoR, .logoA, .logoI, .logoN, .logo4, .logoD {
+	text-shadow: 0px 0px 2px #000;
+}
+
+.logoB, .logoR, .logoA, .logoI, .logoN {
+	font-style: italic;
+}
+
+.logoB {
+	color: rgba(255, 127, 127, 0.5);
+}
+
+.logoR {
+	color: rgba(63, 63, 255, 0.35);
+}
+
+.logoA {
+	color: rgba(191, 191, 255, 0.65);
+}
+
+.logoI {
+	color: rgba(255, 63, 63, 0.35);
+}
+
+.logoN {
+	color: rgba(255, 191, 191, 0.65);
+}
+
+.logo4 {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.logoD {
+	color: rgba(127, 127, 255, 0.5);
+}
+
 .switcher {
 	opacity: 0.5;
 }
