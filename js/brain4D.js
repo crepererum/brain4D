@@ -209,6 +209,7 @@ function init() {
 	}, false);
 
 	canvas.addEventListener("mousedown", function(evt){
+			evt.preventDefault();
 			if (evt.which === 1) {
 				lastX = evt.clientX;
 				lastY = evt.clientY;
@@ -217,12 +218,15 @@ function init() {
 				wAxis = (wAxis + 1) % 3;
 				setActive(wAxis, "axis");
 			}
+			return false;
 			}, false);
 
 	canvas.addEventListener("mouseup", function(evt){
+			evt.preventDefault();
 			if (evt.which === 1) {
 				mouseActive = false;
 			}
+			return false;
 			}, false);
 
 	canvas.addEventListener("mousemove", function(evt){
