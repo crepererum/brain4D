@@ -63,21 +63,21 @@ h2 {
 }
 
 .logoR {
-	color: rgba(63, 63, 255, 0.35);
-	margin-right: -7px;
+	color: rgb(31, 31, 128);
+	margin-right: -9px;
 }
 
 .logoA {
-	color: rgba(63, 63, 255, 0.35);
+	color: rgb(31, 31, 128);
 }
 
 .logoI {
-	color: rgba(255, 63, 63, 0.35);
+	color: rgb(127, 31, 31);
 	position: absolute;
 }
 
 .logoN {
-	color: rgba(255, 63, 63, 0.35);
+	color: rgb(127, 31, 31);
 	position: relative;
 	z-index: 2;
 }
@@ -85,10 +85,14 @@ h2 {
 .logo4 {
 	color: rgba(255, 255, 255, 0.8);
 	margin-right: -10px;
+	position: relative;
+	top: 5px;
 }
 
 .logoD {
 	color: rgba(255, 255, 255, 0.8);
+	position: relative;
+	z-index: 2;
 }
 
 .slogan {
