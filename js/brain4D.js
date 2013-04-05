@@ -60,34 +60,35 @@ function genProjectionMatrix(width, height) {
 	return result;
 }
 
-function genRotationMatrix(x, y, z) {
+function genRotationMatrix(x, y, z, w) {
 	'use strict';
 	var result, tmp;
 
 	result = mat4.create();
 	mat4.rotateX(result, result, x);
 	mat4.rotateY(result, result, y);
+	mat4.rotateZ(result, result, z);
 	tmp = mat4.create();
 	if (wAxis === 0) {
 		tmp.set([
-				Math.cos(z), 0.0, 0.0, -Math.sin(z),
+				Math.cos(w), 0.0, 0.0, -Math.sin(w),
 				0.0, 1.0, 0.0, 0.0,
 				0.0, 0.0, 1.0, 0.0,
-				Math.sin(z), 0.0, 0.0, Math.cos(z)
+				Math.sin(w), 0.0, 0.0, Math.cos(w)
 				]);
 	} else if (wAxis === 1) {
 		tmp.set([
 				1.0, 0.0, 0.0, 0.0,
-				0.0, Math.cos(z), 0.0, -Math.sin(z),
+				0.0, Math.cos(w), 0.0, -Math.sin(w),
 				0.0, 0.0, 1.0, 0.0,
-				0.0, Math.sin(z), 0.0, Math.cos(z)
+				0.0, Math.sin(w), 0.0, Math.cos(w)
 				]);
 	} else {
 		tmp.set([
 				1.0, 0.0, 0.0, 0.0,
 				0.0, 1.0, 0.0, 0.0,
-				0.0, 0.0, Math.cos(z), -Math.sin(z),
-				0.0, 0.0, Math.sin(z), Math.cos(z)
+				0.0, 0.0, Math.cos(w), -Math.sin(w),
+				0.0, 0.0, Math.sin(w), Math.cos(w)
 				]);
 	}
 	mat4.multiply(result, result, tmp);
@@ -241,7 +242,7 @@ function init() {
 						break;
 
 					case 2:
-						dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0);
+						dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0, 0.0);
 						mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 						vec4.transformMat4(transVec, transVec, dMatrix);
 						break;
@@ -265,19 +266,20 @@ function init() {
 			switch (mode) {
 				case 1:
 					dVec = vec4.create();
-					dVec.set([0.0, 0.0, 0.0, evt.wheelDelta / 1000.0]);
+					dVec.set([0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0]);
 					vec4.add(transVec, transVec, dVec);
 					break;
 
 				case 2:
-					dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDelta / 1000.0);
+					dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0);
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 					break;
 
 				case 3:
 					dMatrix = mat4.create();
-					dMatrix[15] += evt.wheelDelta / 1000.0;
+					dMatrix[10] += evt.wheelDeltaX / 1000.0;
+					dMatrix[15] += evt.wheelDeltaY / 1000.0;
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 					break;
