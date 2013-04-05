@@ -146,6 +146,27 @@ function setActive(x, namespace) {
 	}
 }
 
+function setMode(x) {
+	'use strict';
+	var cursor = "";
+
+	switch (x) {
+		case 1:
+			cursor = "move";
+			break;
+		case 2:
+			cursor = "col-resize"
+			break;
+		case 3:
+			cursor = "crosshair";
+			break;
+	}
+	document.getElementById("glcanvas").style.cursor = cursor;
+
+	setActive(x, "mode");
+	mode = x;
+}
+
 function init() {
 	'use strict';
 	var canvas, fragmentShader, vertexShader;
@@ -190,20 +211,17 @@ function init() {
 		switch (evt.keyCode) {
 			// 1
 			case 49:
-				setActive(1, "mode");
-				mode = 1;
+				setMode(1);
 				break;
 
 			// 2
 			case 50:
-				setActive(2, "mode");
-				mode = 2;
+				setMode(2);
 				break;
 
 			// 3
 			case 51:
-				setActive(3, "mode");
-				mode = 3;
+				setMode(3);
 				break;
 		}
 	}, false);
@@ -320,8 +338,7 @@ window.onload = function() {
 				elementList[i].modeId = parseInt(match[1]);
 				elementList[i].addEventListener("mousedown", function(evt){
 					evt.preventDefault();
-					setActive(evt.target.modeId, "mode");
-					mode = evt.target.modeId;
+					setMode(evt.target.modeId);
 					return false;
 				}, false);
 			}
@@ -329,7 +346,7 @@ window.onload = function() {
 	}
 
 	setActive(wAxis, "axis");
-	setActive(mode, "mode");
+	setMode(mode);
 
 	readFile("data/breast_pca.csv", function(raw){
 		var i, j, parsedData;
