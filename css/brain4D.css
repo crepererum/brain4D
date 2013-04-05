@@ -4,6 +4,10 @@ html, body {
 	width: 100%;
 }
 
+h1 {
+	margin-bottom: 4px;
+}
+
 h2 {
 	margin-bottom: 4px;
 	margin-top: 30px;
@@ -85,6 +89,20 @@ h2 {
 
 .logoD {
 	color: rgba(255, 255, 255, 0.8);
+}
+
+.slogan {
+	color: #444;
+	font-style: italic;
+	margin-top: 0;
+}
+
+.slogan:before {
+	content: "(";
+}
+
+.slogan:after {
+	content: ")";
 }
 
 .switcher {
