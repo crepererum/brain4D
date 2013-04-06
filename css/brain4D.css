@@ -1,3 +1,5 @@
+/*csslint ids: false*/
+
 html, body {
 	height: 100%;
 	overflow: hidden;
@@ -14,19 +16,19 @@ h2 {
 	margin-top: 30px;
 }
 
-.active {
-	opacity: 1.0 !important;
+.active .switcher {
+	opacity: 1.0;
 }
 
 .button {
 	background: url(../img/button_background.png);
-	border: 1px grey solid;
+	border: 1px gray solid;
 	border-radius: 6px;
 	cursor: pointer;
 	display: inline-block;
 	font-weight: bold;
 	line-height: 20px;
-	margin: 0px 1px;
+	margin: 0 1px;
 	min-width: 16px;
 	padding: 5px 8px;
 	position: relative;
@@ -45,7 +47,7 @@ h2 {
 }
 
 .logoB, .logoR, .logoA, .logoI, .logoN, .logo4, .logoD {
-	text-shadow: 0px 0px 2px #000;
+	text-shadow: 0 0 2px #000;
 }
 
 .logoB, .logoR, .logoA, .logoI, .logoN {
@@ -55,12 +57,13 @@ h2 {
 .logoB:before, .logoD:after {
 	color: #222;
 	content: "-";
-	margin: 0px 8px;
+	margin: 0 8px;
 }
 
 .logoB {
+	color: rgb(255, 127, 127);
 	color: rgba(255, 127, 127, 0.5);
-	text-shadow: 4px 0px 0px #222;
+	text-shadow: 4px 0 0 #222;
 }
 
 .logoR {
@@ -84,6 +87,7 @@ h2 {
 }
 
 .logo4 {
+	color: rgb(255, 255, 255);
 	color: rgba(255, 255, 255, 0.8);
 	margin-right: -10px;
 	position: relative;
@@ -91,6 +95,7 @@ h2 {
 }
 
 .logoD {
+	color: rgb(255, 255, 255);
 	color: rgba(255, 255, 255, 0.8);
 	position: relative;
 	z-index: 2;
@@ -143,7 +148,6 @@ h2 {
 	line-height: 60px;
 	margin-bottom: 50px;
 	text-align: center;
-	vertical-align: center;
 	width: 100%;
 }
 
@@ -181,7 +185,7 @@ h2 {
 
 #sidebar {
 	background: black;
-	color: grey;
+	color: gray;
 	float: left;
 	height: 100%;
 	overflow-y: scroll;
