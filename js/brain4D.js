@@ -7,9 +7,7 @@ var rotMatrix, transVec;
 
 var lastX, lastY;
 
-var gl;
-var shaderProgram;
-var vbuffer;
+var gl, shaderProgram, vbuffer;
 
 function getShader(gl, id) {
 	'use strict';
@@ -193,7 +191,7 @@ function setBufferData(vertices) {
 	vbuffer.numItems = vertices.length / 4;
 }
 
-function init(vertices) {
+function initGl(vertices) {
 	'use strict';
 	var canvas, fragmentShader, vertexShader;
 
@@ -228,156 +226,45 @@ function init(vertices) {
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
 	gl.enable(gl.POINTS_SMOOTH);
-
-	document.addEventListener("keypress", function(evt){
-		evt.preventDefault();
-		switch (evt.keyCode) {
-			// 1
-			case 49:
-				setMode(1);
-				break;
-
-			// 2
-			case 50:
-				setMode(2);
-				break;
-
-			// 3
-			case 51:
-				setMode(3);
-				break;
-
-			// R
-			case 114:
-				reset();
-				break;
-		}
-	}, false);
-
-	canvas.addEventListener("mousedown", function(evt){
-			evt.preventDefault();
-			if (evt.which === 1) {
-				lastX = evt.clientX;
-				lastY = evt.clientY;
-				mouseActive = true;
-			} else if (evt.which === 2) {
-				wAxis = (wAxis + 1) % 3;
-				setActive(wAxis, "axis");
-			}
-			return false;
-			}, false);
-
-	canvas.addEventListener("mouseup", function(evt){
-			evt.preventDefault();
-			if (evt.which === 1) {
-				mouseActive = false;
-			}
-			return false;
-			}, false);
-
-	canvas.addEventListener("mousemove", function(evt){
-			if (mouseActive) {
-				var dX, dY, dVec, dMatrix;
-
-				dX = evt.clientX - lastX;
-				dY = evt.clientY - lastY;
-				lastX = evt.clientX;
-				lastY = evt.clientY;
-
-				switch (mode) {
-					case 1:
-						dVec = vec4.create();
-						dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
-						vec4.add(transVec, transVec, dVec);
-						break;
-
-					case 2:
-						dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0, 0.0);
-						mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-						vec4.transformMat4(transVec, transVec, dMatrix);
-						break;
-
-					case 3:
-						dMatrix = mat4.create();
-						dMatrix[0] += dX / gl.viewportWidth;
-						dMatrix[5] -= dY / gl.viewportHeight;
-						mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-						vec4.transformMat4(transVec, transVec, dMatrix);
-						break;
-				}
-			}
-			}, false);
-
-	canvas.addEventListener("mousewheel", function(evt){
-			var dVec, dMatrix;
-
-			evt.preventDefault();
-
-			switch (mode) {
-				case 1:
-					dVec = vec4.create();
-					dVec.set([0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0]);
-					vec4.add(transVec, transVec, dVec);
-					break;
-
-				case 2:
-					dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0);
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
-					break;
-
-				case 3:
-					dMatrix = mat4.create();
-					dMatrix[10] += evt.wheelDeltaX / 1000.0;
-					dMatrix[15] += evt.wheelDeltaY / 1000.0;
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
-					break;
-			}
-
-			return false;
-			}, false);
-
-	window.requestAnimationFrame(draw);
 }
 
 function parseCsv(raw) {
-		var i, j, min, max, parsedData, x, obj, ok;
+	var i, j, min, max, parsedData, x, obj, ok;
 
-		parsedData = CSV.csvToArray(raw);
-		vertices = [];
-		min = [Infinity, Infinity, Infinity, Infinity];
-		max = [-Infinity, -Infinity, -Infinity, -Infinity];
-		for (i = 0; i < parsedData.length; ++i) {
-			obj = [];
-			ok = true;
-			for (j = 0; j < 4; ++j) {
-				x = parseFloat(parsedData[i][j]);
-				if (isNaN(x)) {
-					ok = false;
-					break;
-				}
-
-				obj[j] = x;
+	parsedData = CSV.csvToArray(raw);
+	vertices = [];
+	min = [Infinity, Infinity, Infinity, Infinity];
+	max = [-Infinity, -Infinity, -Infinity, -Infinity];
+	for (i = 0; i < parsedData.length; ++i) {
+		obj = [];
+		ok = true;
+		for (j = 0; j < 4; ++j) {
+			x = parseFloat(parsedData[i][j]);
+			if (isNaN(x)) {
+				ok = false;
+				break;
 			}
 
-			if (ok) {
-				for (j = 0; j < 4; ++j) {
-					min[j] = Math.min(min[j], obj[j]);
-					max[j] = Math.max(max[j], obj[j]);
-					vertices.push(obj[j]);
-				}
-			}
+			obj[j] = x;
 		}
 
-		for (i = 0; i < vertices.length / 4; ++i) {
+		if (ok) {
 			for (j = 0; j < 4; ++j) {
-				x = vertices[i * 4 + j];
-				vertices[i * 4 + j] = 2.0 * (x - min[j]) / (max[j] - min[j]) - 1.0;
+				min[j] = Math.min(min[j], obj[j]);
+				max[j] = Math.max(max[j], obj[j]);
+				vertices.push(obj[j]);
 			}
 		}
+	}
 
-		return vertices;
+	for (i = 0; i < vertices.length / 4; ++i) {
+		for (j = 0; j < 4; ++j) {
+			x = vertices[i * 4 + j];
+			vertices[i * 4 + j] = 2.0 * (x - min[j]) / (max[j] - min[j]) - 1.0;
+		}
+	}
+
+	return vertices;
 }
 
 window.onload = function() {
@@ -385,6 +272,9 @@ window.onload = function() {
 	var reMode, reAxis, elementList, match, i, j;
 
 	reset();
+	setActive(wAxis, "axis");
+	setMode(mode);
+
 	addButtonListener(document.getElementById("resetButton"), reset);
 
 	elementList = document.getElementsByClassName("button");
@@ -411,9 +301,6 @@ window.onload = function() {
 		}
 	}
 
-	setActive(wAxis, "axis");
-	setMode(mode);
-
 	document.getElementById("dropzone").addEventListener("dragover", function(evt){
 		evt.stopPropagation();
 		evt.preventDefault();
@@ -439,9 +326,122 @@ window.onload = function() {
 		}
 	}, false);
 
+	document.addEventListener("keypress", function(evt){
+		evt.preventDefault();
+		switch (evt.keyCode) {
+			// 1
+			case 49:
+				setMode(1);
+				break;
+
+			// 2
+			case 50:
+				setMode(2);
+				break;
+
+			// 3
+			case 51:
+				setMode(3);
+				break;
+
+			// R
+			case 114:
+				reset();
+				break;
+		}
+	}, false);
+
+	initGl([]);
+	window.requestAnimationFrame(draw);
+
+	document.getElementById("glcanvas").addEventListener("mousedown", function(evt){
+		evt.preventDefault();
+		if (evt.which === 1) {
+			lastX = evt.clientX;
+			lastY = evt.clientY;
+			mouseActive = true;
+		} else if (evt.which === 2) {
+			wAxis = (wAxis + 1) % 3;
+			setActive(wAxis, "axis");
+		}
+		return false;
+	}, false);
+
+	document.getElementById("glcanvas").addEventListener("mouseup", function(evt){
+		evt.preventDefault();
+		if (evt.which === 1) {
+			mouseActive = false;
+		}
+		return false;
+	}, false);
+
+	document.getElementById("glcanvas").addEventListener("mousemove", function(evt){
+		if (mouseActive) {
+			var dX, dY, dVec, dMatrix;
+
+			dX = evt.clientX - lastX;
+			dY = evt.clientY - lastY;
+			lastX = evt.clientX;
+			lastY = evt.clientY;
+
+			switch (mode) {
+				case 1:
+					dVec = vec4.create();
+					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
+					vec4.add(transVec, transVec, dVec);
+					break;
+
+				case 2:
+					dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0, 0.0);
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
+					break;
+
+				case 3:
+					dMatrix = mat4.create();
+					dMatrix[0] += dX / gl.viewportWidth;
+					dMatrix[5] -= dY / gl.viewportHeight;
+					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+					vec4.transformMat4(transVec, transVec, dMatrix);
+					break;
+			}
+		}
+	}, false);
+
+	document.getElementById("glcanvas").addEventListener("mousewheel", function(evt){
+		var dVec, dMatrix;
+
+		evt.preventDefault();
+
+		switch (mode) {
+			case 1:
+				dVec = vec4.create();
+				dVec.set([0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0]);
+				vec4.add(transVec, transVec, dVec);
+				break;
+
+			case 2:
+				dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0);
+				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+				vec4.transformMat4(transVec, transVec, dMatrix);
+				break;
+
+			case 3:
+				dMatrix = mat4.create();
+				dMatrix[10] += evt.wheelDeltaX / 1000.0;
+				dMatrix[15] += evt.wheelDeltaY / 1000.0;
+				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+				vec4.transformMat4(transVec, transVec, dMatrix);
+				break;
+		}
+
+		return false;
+	}, false);
+
 	readFile("data/breast_pca.csv", function(raw){
 		var vertices = parseCsv(raw);
-		init(vertices);
+		reset();
+		setBufferData(vertices);
 	});
 };
 
