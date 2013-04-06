@@ -10,6 +10,20 @@ var lastX, lastY;
 
 var gl, shaderProgram, vbuffer;
 
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
+
+function sgn(x) {
+	"use strict";
+
+	if (x > 0) {
+		return 1;
+	} else if (x < 0) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
 function getShader(gl, id) {
 	"use strict";
 	var k, shader, shaderScript, str;
@@ -284,6 +298,40 @@ function buttonListenerMode(target) {
 	setMode(target.modeId);
 }
 
+function mouseListenerScroll(evt) {
+	"use strict";
+	var dVec, dMatrix, deltaX, deltaY;
+
+	evt.preventDefault();
+
+	deltaX = sgn(evt.deltaX || evt.wheelDeltaX) * 0.1;
+	deltaY = sgn(evt.deltaY || evt.wheelDeltaY) * 0.1;
+
+	switch (mode) {
+		case 1:
+			dVec = vec4.create();
+			dVec.set([0.0, 0.0, deltaX, deltaY]);
+			vec4.add(transVec, transVec, dVec);
+			break;
+
+		case 2:
+			dMatrix =  genRotationMatrix(0.0, 0.0, deltaX, deltaY);
+			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+			vec4.transformMat4(transVec, transVec, dMatrix);
+			break;
+
+		case 3:
+			dMatrix = mat4.create();
+			dMatrix[10] += deltaX;
+			dMatrix[15] += deltaY;
+			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+			vec4.transformMat4(transVec, transVec, dMatrix);
+			break;
+	}
+
+	return false;
+}
+
 window.onload = function() {
 	"use strict";
 	var reMode, reAxis, elementList, match, i, j;
@@ -338,7 +386,7 @@ window.onload = function() {
 		}
 	}, false);
 
-	document.addEventListener("keypress", function(evt){
+	document.addEventListener("keyup", function(evt){
 		evt.preventDefault();
 		switch (evt.keyCode) {
 			// 1
@@ -357,6 +405,7 @@ window.onload = function() {
 				break;
 
 			// R
+			case 82:
 			case 114:
 				reset();
 				break;
@@ -420,35 +469,8 @@ window.onload = function() {
 		}
 	}, false);
 
-	document.getElementById("glcanvas").addEventListener("mousewheel", function(evt){
-		var dVec, dMatrix;
-
-		evt.preventDefault();
-
-		switch (mode) {
-			case 1:
-				dVec = vec4.create();
-				dVec.set([0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0]);
-				vec4.add(transVec, transVec, dVec);
-				break;
-
-			case 2:
-				dMatrix =  genRotationMatrix(0.0, 0.0, evt.wheelDeltaX / 1000.0, evt.wheelDeltaY / 1000.0);
-				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-				vec4.transformMat4(transVec, transVec, dMatrix);
-				break;
-
-			case 3:
-				dMatrix = mat4.create();
-				dMatrix[10] += evt.wheelDeltaX / 1000.0;
-				dMatrix[15] += evt.wheelDeltaY / 1000.0;
-				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-				vec4.transformMat4(transVec, transVec, dMatrix);
-				break;
-		}
-
-		return false;
-	}, false);
+	document.getElementById("glcanvas").addEventListener("mousewheel", mouseListenerScroll, false);
+	document.getElementById("glcanvas").addEventListener("wheel", mouseListenerScroll, false);
 
 	readFile("data/breast_pca.csv", function(raw){
 		var vertices = parseCsv(raw);
