@@ -358,13 +358,13 @@ function parseCsv(raw) {
 					break;
 				}
 
-				min[j] = Math.min(min[j], x);
-				max[j] = Math.max(max[j], x);
 				obj[j] = x;
 			}
 
 			if (ok) {
 				for (j = 0; j < 4; ++j) {
+					min[j] = Math.min(min[j], obj[j]);
+					max[j] = Math.max(max[j], obj[j]);
 					vertices.push(obj[j]);
 				}
 			}
