@@ -137,6 +137,14 @@ h2 {
 	width: 20px;
 }
 
+#dropzone {
+	background: #222;
+	line-height: 60px;
+	text-align: center;
+	vertical-align: center;
+	width: 100%;
+}
+
 #glcanvas {
 	height: 100%;
 	width: 100%;

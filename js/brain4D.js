@@ -10,7 +10,6 @@ var lastX, lastY;
 var gl;
 var shaderProgram;
 var vbuffer;
-var vertices;
 
 function getShader(gl, id) {
 	'use strict';
@@ -182,7 +181,19 @@ function addButtonListener(element, listener) {
 	}, false);
 }
 
-function init() {
+function setBufferData(vertices) {
+	if (vbuffer) {
+		gl.deleteBuffer(vbuffer);
+	}
+
+	vbuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	vbuffer.itemSize = 4;
+	vbuffer.numItems = vertices.length / 4;
+}
+
+function init(vertices) {
 	'use strict';
 	var canvas, fragmentShader, vertexShader;
 
@@ -210,11 +221,7 @@ function init() {
 	shaderProgram.transVecUnif = gl.getUniformLocation(shaderProgram, "transVec");
 	shaderProgram.projMatrixUnif = gl.getUniformLocation(shaderProgram, "projMatrix");
 
-	vbuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-	vbuffer.itemSize = 4;
-	vbuffer.numItems = vertices.length / 4;
+	setBufferData(vertices);
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -334,6 +341,20 @@ function init() {
 	window.requestAnimationFrame(draw);
 }
 
+function parseCsv(raw) {
+		var i, j, parsedData;
+
+		parsedData = CSV.csvToArray(raw);
+		vertices = [];
+		for (i = 0; i < parsedData.length; ++i) {
+			for (j = 0; j < 4; ++j) {
+				vertices[i * 4 + j] = parseFloat(parsedData[i][j]);
+			}
+		}
+
+		return vertices;
+}
+
 window.onload = function() {
 	'use strict';
 	var reMode, reAxis, elementList, match, i, j;
@@ -368,18 +389,33 @@ window.onload = function() {
 	setActive(wAxis, "axis");
 	setMode(mode);
 
-	readFile("data/breast_pca.csv", function(raw){
-		var i, j, parsedData;
+	document.getElementById("dropzone").addEventListener("dragover", function(evt){
+		evt.stopPropagation();
+		evt.preventDefault();
+		evt.dataTransfer.dropEffect = "copy";
+	}, false);
 
-		parsedData = CSV.csvToArray(raw);
-		vertices = [];
-		for (i = 0; i < parsedData.length; ++i) {
-			for (j = 0; j < 4; ++j) {
-				vertices[i * 4 + j] = parseFloat(parsedData[i][j]);
-			}
+	document.getElementById("dropzone").addEventListener("drop", function(evt){
+		var file, re, reader;
+
+		evt.stopPropagation();
+		evt.preventDefault();
+
+		file = evt.dataTransfer.files[0];
+		re = new RegExp("\\.csv$");
+		if (re.exec(file.name)) {
+			reader = new FileReader();
+			reader.onload = function(evt) {
+				var vertices = parseCsv(evt.target.result);
+				setBufferData(vertices);
+			};
+			reader.readAsText(file);
 		}
+	}, false);
 
-		init();
+	readFile("data/breast_pca.csv", function(raw){
+		var vertices = parseCsv(raw);
+		init(vertices);
 	});
 };
 
