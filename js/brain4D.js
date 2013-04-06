@@ -1,4 +1,5 @@
-/*jslint browser: true, devel: true, bitwise: true, plusplus: true, white: true */
+/* jshint browser:true, camelcase:true, curly:true, devel:true, eqeqeq:true, forin:true, latedef:true, newcap:true, noarg:true, noempty:true, nonew:true, quotmark:double, strict:true, trailing:true, undef:true, unused:true */
+/* global CSV, mat4, vec4 */
 var mode = 1;
 var wAxis = 1;
 var mouseActive = false;
@@ -10,7 +11,7 @@ var lastX, lastY;
 var gl, shaderProgram, vbuffer;
 
 function getShader(gl, id) {
-	'use strict';
+	"use strict";
 	var k, shader, shaderScript, str;
 
 	shaderScript = document.getElementById(id);
@@ -44,7 +45,7 @@ function getShader(gl, id) {
 }
 
 function genProjectionMatrix(width, height) {
-	'use strict';
+	"use strict";
 	var factor1, factor2, result;
 
 	result = mat4.create();
@@ -56,7 +57,7 @@ function genProjectionMatrix(width, height) {
 }
 
 function genRotationMatrix(x, y, z, w) {
-	'use strict';
+	"use strict";
 	var result, tmp;
 
 	result = mat4.create();
@@ -92,14 +93,14 @@ function genRotationMatrix(x, y, z, w) {
 }
 
 function reset() {
-	'use strict';
+	"use strict";
 
 	rotMatrix = mat4.create();
 	transVec = vec4.create();
 }
 
 function draw() {
-	'use strict';
+	"use strict";
 
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -115,7 +116,7 @@ function draw() {
 }
 
 function readFile(path, callback) {
-	'use strict';
+	"use strict";
 
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
@@ -129,7 +130,7 @@ function readFile(path, callback) {
 }
 
 function setActive(x, namespace) {
-	'use strict';
+	"use strict";
 	var i, j, old, next;
 
 	old = document.getElementsByClassName("active");
@@ -149,7 +150,7 @@ function setActive(x, namespace) {
 }
 
 function setMode(x) {
-	'use strict';
+	"use strict";
 	var cursor = "";
 
 	switch (x) {
@@ -157,7 +158,7 @@ function setMode(x) {
 			cursor = "move";
 			break;
 		case 2:
-			cursor = "col-resize"
+			cursor = "col-resize";
 			break;
 		case 3:
 			cursor = "crosshair";
@@ -170,7 +171,7 @@ function setMode(x) {
 }
 
 function addButtonListener(element, listener) {
-	'use strict';
+	"use strict";
 
 	element.addEventListener("mousedown", function(evt){
 		evt.preventDefault();
@@ -180,6 +181,8 @@ function addButtonListener(element, listener) {
 }
 
 function setBufferData(vertices) {
+	"use strict";
+
 	if (vbuffer) {
 		gl.deleteBuffer(vbuffer);
 	}
@@ -192,7 +195,7 @@ function setBufferData(vertices) {
 }
 
 function initGl(vertices) {
-	'use strict';
+	"use strict";
 	var canvas, fragmentShader, vertexShader;
 
 	canvas = document.getElementById("glcanvas");
@@ -229,7 +232,8 @@ function initGl(vertices) {
 }
 
 function parseCsv(raw) {
-	var i, j, min, max, parsedData, x, obj, ok;
+	"use strict";
+	var i, j, min, max, parsedData, x, obj, ok, vertices;
 
 	parsedData = CSV.csvToArray(raw);
 	vertices = [];
@@ -267,8 +271,21 @@ function parseCsv(raw) {
 	return vertices;
 }
 
+function buttonListenerAxis(target) {
+	"use strict";
+
+	setActive(target.axisId, "axis");
+	wAxis = target.axisId;
+}
+
+function buttonListenerMode(target) {
+	"use strict";
+
+	setMode(target.modeId);
+}
+
 window.onload = function() {
-	'use strict';
+	"use strict";
 	var reMode, reAxis, elementList, match, i, j;
 
 	reset();
@@ -284,19 +301,14 @@ window.onload = function() {
 		for (j = 0; j < elementList[i].classList.length; ++j) {
 			match = reAxis.exec(elementList[i].classList[j]);
 			if (match) {
-				elementList[i].axisId = parseInt(match[1]);
-				addButtonListener(elementList[i], function(target){
-					setActive(target.axisId, "axis");
-					wAxis = target.axisId;
-				});
+				elementList[i].axisId = parseInt(match[1], 10);
+				addButtonListener(elementList[i], buttonListenerAxis);
 			}
 
 			match = reMode.exec(elementList[i].classList[j]);
 			if (match) {
-				elementList[i].modeId = parseInt(match[1]);
-				addButtonListener(elementList[i], function(target){
-					setMode(target.modeId);
-				});
+				elementList[i].modeId = parseInt(match[1], 10);
+				addButtonListener(elementList[i], buttonListenerMode);
 			}
 		}
 	}
