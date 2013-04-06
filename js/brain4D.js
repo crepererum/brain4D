@@ -407,6 +407,7 @@ window.onload = function() {
 			reader = new FileReader();
 			reader.onload = function(evt) {
 				var vertices = parseCsv(evt.target.result);
+				reset();
 				setBufferData(vertices);
 			};
 			reader.readAsText(file);
