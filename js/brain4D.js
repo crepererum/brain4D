@@ -1,13 +1,11 @@
 /*jslint browser: true, devel: true, bitwise: true, plusplus: true, white: true */
 var mode = 1;
-
-var rotMatrix = mat4.create();
-var mouseActive = false;
-var transVec = vec4.create();
 var wAxis = 1;
+var mouseActive = false;
 
-var lastX;
-var lastY;
+var rotMatrix, transVec;
+
+var lastX, lastY;
 
 var gl;
 var shaderProgram;
@@ -96,6 +94,13 @@ function genRotationMatrix(x, y, z, w) {
 	return result;
 }
 
+function reset() {
+	'use strict';
+
+	rotMatrix = mat4.create();
+	transVec = vec4.create();
+}
+
 function draw() {
 	'use strict';
 
@@ -167,6 +172,16 @@ function setMode(x) {
 	mode = x;
 }
 
+function addButtonListener(element, listener) {
+	'use strict';
+
+	element.addEventListener("mousedown", function(evt){
+		evt.preventDefault();
+		listener(evt.target);
+		return false;
+	}, false);
+}
+
 function init() {
 	'use strict';
 	var canvas, fragmentShader, vertexShader;
@@ -208,6 +223,7 @@ function init() {
 	gl.enable(gl.POINTS_SMOOTH);
 
 	document.addEventListener("keypress", function(evt){
+		evt.preventDefault();
 		switch (evt.keyCode) {
 			// 1
 			case 49:
@@ -222,6 +238,11 @@ function init() {
 			// 3
 			case 51:
 				setMode(3);
+				break;
+
+			// R
+			case 114:
+				reset();
 				break;
 		}
 	}, false);
@@ -317,6 +338,9 @@ window.onload = function() {
 	'use strict';
 	var reMode, reAxis, elementList, match, i, j;
 
+	reset();
+	addButtonListener(document.getElementById("resetButton"), reset);
+
 	elementList = document.getElementsByClassName("button");
 	reAxis = new RegExp("^axis(\\d+)$");
 	reMode = new RegExp("^mode(\\d+)$");
@@ -325,22 +349,18 @@ window.onload = function() {
 			match = reAxis.exec(elementList[i].classList[j]);
 			if (match) {
 				elementList[i].axisId = parseInt(match[1]);
-				elementList[i].addEventListener("mousedown", function(evt){
-					evt.preventDefault();
-					setActive(evt.target.axisId, "axis");
-					wAxis = evt.target.axisId;
-					return false;
-				}, false);
+				addButtonListener(elementList[i], function(target){
+					setActive(target.axisId, "axis");
+					wAxis = target.axisId;
+				});
 			}
 
 			match = reMode.exec(elementList[i].classList[j]);
 			if (match) {
 				elementList[i].modeId = parseInt(match[1]);
-				elementList[i].addEventListener("mousedown", function(evt){
-					evt.preventDefault();
-					setMode(evt.target.modeId);
-					return false;
-				}, false);
+				addButtonListener(elementList[i], function(target){
+					setMode(target.modeId);
+				});
 			}
 		}
 	}
