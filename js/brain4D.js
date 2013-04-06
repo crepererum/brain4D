@@ -342,22 +342,35 @@ function init(vertices) {
 }
 
 function parseCsv(raw) {
-		var i, j, min, max, parsedData, x;
+		var i, j, min, max, parsedData, x, obj, ok;
 
 		parsedData = CSV.csvToArray(raw);
 		vertices = [];
 		min = [Infinity, Infinity, Infinity, Infinity];
 		max = [-Infinity, -Infinity, -Infinity, -Infinity];
 		for (i = 0; i < parsedData.length; ++i) {
+			obj = [];
+			ok = true;
 			for (j = 0; j < 4; ++j) {
 				x = parseFloat(parsedData[i][j]);
+				if (isNaN(x)) {
+					ok = false;
+					break;
+				}
+
 				min[j] = Math.min(min[j], x);
 				max[j] = Math.max(max[j], x);
-				vertices[i * 4 + j] = x;
+				obj[j] = x;
+			}
+
+			if (ok) {
+				for (j = 0; j < 4; ++j) {
+					vertices.push(obj[j]);
+				}
 			}
 		}
 
-		for (i = 0; i < parsedData.length; ++i) {
+		for (i = 0; i < vertices.length / 4; ++i) {
 			for (j = 0; j < 4; ++j) {
 				x = vertices[i * 4 + j];
 				vertices[i * 4 + j] = 2.0 * (x - min[j]) / (max[j] - min[j]) - 1.0;
