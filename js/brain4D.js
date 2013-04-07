@@ -335,22 +335,24 @@ window.onerror = function(msg, url, line) {
 	"use strict";
 	var divError, h2Error, pMsg, pInfo;
 
-	divError = document.createElement("div");
-	h2Error = document.createElement("h2");
-	pMsg = document.createElement("p");
-	pInfo = document.createElement("p");
+	if (document.getElementsByClassName("error").length === 0) {
+		divError = document.createElement("div");
+		h2Error = document.createElement("h2");
+		pMsg = document.createElement("p");
+		pInfo = document.createElement("p");
 
-	h2Error.appendChild(document.createTextNode("Error"));
-	pMsg.appendChild(document.createTextNode(msg));
-	pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
+		h2Error.appendChild(document.createTextNode("Error"));
+		pMsg.appendChild(document.createTextNode(msg));
+		pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
 
-	divError.classList.add("error");
+		divError.classList.add("error");
 
-	divError.appendChild(h2Error);
-	divError.appendChild(pMsg);
-	divError.appendChild(pInfo);
+		divError.appendChild(h2Error);
+		divError.appendChild(pMsg);
+		divError.appendChild(pInfo);
 
-	document.body.appendChild(divError);
+		document.body.appendChild(divError);
+	}
 };
 
 window.onload = function() {
