@@ -1,4 +1,4 @@
-/* jshint browser:true, camelcase:true, curly:true, devel:true, eqeqeq:true, forin:true, latedef:true, newcap:true, noarg:true, noempty:true, nonew:true, quotmark:double, strict:true, trailing:true, undef:true, unused:true */
+/* jshint browser:true, camelcase:true, curly:true, eqeqeq:true, forin:true, latedef:true, newcap:true, noarg:true, noempty:true, nonew:true, quotmark:double, strict:true, trailing:true, undef:true, unused:true */
 /* global CSV, mat4, vec4 */
 var mode = 1;
 var wAxis = 1;
@@ -51,8 +51,7 @@ function getShader(gl, id) {
 	gl.compileShader(shader);
 
 	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-		console.error(gl.getShaderInfoLog(shader));
-		return null;
+		throw new Error(gl.getShaderInfoLog(shader));
 	}
 
 	return shader;
@@ -227,7 +226,7 @@ function initGl(vertices) {
 	gl.attachShader(shaderProgram, fragmentShader);
 	gl.linkProgram(shaderProgram);
 	if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-		console.error("Could not initialise shaders");
+		throw new Error("Could not initialise shaders");
 	}
 	gl.useProgram(shaderProgram);
 	shaderProgram.vPosAttr = gl.getAttribLocation(shaderProgram, "aVertexPosition");
@@ -331,6 +330,28 @@ function mouseListenerScroll(evt) {
 
 	return false;
 }
+
+window.onerror = function(msg, url, line) {
+	"use strict";
+	var divError, h2Error, pMsg, pInfo;
+
+	divError = document.createElement("div");
+	h2Error = document.createElement("h2");
+	pMsg = document.createElement("p");
+	pInfo = document.createElement("p");
+
+	h2Error.appendChild(document.createTextNode("Error"));
+	pMsg.appendChild(document.createTextNode(msg));
+	pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
+
+	divError.classList.add("error");
+
+	divError.appendChild(h2Error);
+	divError.appendChild(pMsg);
+	divError.appendChild(pInfo);
+
+	document.body.appendChild(divError);
+};
 
 window.onload = function() {
 	"use strict";
