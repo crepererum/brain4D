@@ -6,6 +6,7 @@
 		<link rel="shortcut icon" href="favicon.ico" />
 		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="css/brain4D.css" />
+		<script type="text/javascript" src="js/modernizr.js"></script>
 		<script type="text/javascript" src="js/gl-matrix-min.js"></script>
 		<script type="text/javascript" src="js/ucsv-min.js"></script>
 		<script type="text/javascript" src="js/brain4D.js"></script>
@@ -46,6 +47,14 @@
 	</head>
 	<body>
 		<div id="container">
+			<div id="browserMessage" class="message">
+				<h2>Incompatible browser</h2>
+				<p>Your browser is not compatible with this web application. Use the recent version of a modern, mainstream browser (e.g. <a href="https://www.google.com/chrome">Chrome</a> or <a href="https://www.mozilla.org/firefox">Firefox</a>) and activate JavaScript to use this application. Please also ensure that you use a fully functional graphic driver.</p>
+			</div>
+			<div id="loadMessage" class="message">
+				<h2>Load application</h2>
+				<p>Please wait a moment...</p>
+			</div>
 			<div id="main">
 				<div id="crosshair"></div>
 				<canvas id="glcanvas"></canvas>

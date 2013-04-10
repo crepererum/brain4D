@@ -1,19 +1,9 @@
-/*csslint ids: false, important:false*/
+/*csslint ids: false, important:false, qualified-headings:false, unique-headings:false*/
 
 html, body {
 	height: 100%;
 	overflow: hidden;
 	width: 100%;
-}
-
-h1 {
-	margin-bottom: 4px;
-	position: relative;
-}
-
-h2 {
-	margin-bottom: 4px;
-	margin-top: 30px;
 }
 
 .active {
@@ -46,21 +36,11 @@ h2 {
 	padding: 0;
 }
 
-.error {
-	background: rgb(63, 0, 0);
-	background: rgba(63, 0, 0, 0.7);
-	color: red;
-	height: 100%;
-	left: 0;
-	position: fixed;
-	text-align: center;
-	top: 0;
-	width: 100%;
-	z-index: 20;
-}
-
-.error:first-child {
-	margin-top: 50px;
+.errorMessage {
+	background: rgb(63, 0, 0) !important;
+	background: rgba(63, 0, 0, 0.7) !important;
+	color: red !important;
+	z-index: 25 !important;
 }
 
 .logoB, .logoR, .logoA, .logoI, .logoN, .logo4, .logoD {
@@ -118,6 +98,32 @@ h2 {
 	z-index: 2;
 }
 
+.message {
+	background: grey;
+	height: 100%;
+	left: 0;
+	position: fixed;
+	text-align: center;
+	top: 0;
+	width: 100%;
+	z-index: -10;
+}
+
+.message > h2 {
+	margin-top: 50px;
+}
+
+.message > p {
+	display: inline-block;
+	max-width: 600px;
+}
+
+.message a {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
 .slogan {
 	color: #444;
 	font-style: italic;
@@ -134,6 +140,10 @@ h2 {
 
 .switcher {
 	opacity: 0.5;
+}
+
+#browserMessage {
+	z-index: 21 !important;
 }
 
 #clear {
@@ -162,6 +172,7 @@ h2 {
 
 #dropzone {
 	background: #222;
+	display: none;
 	line-height: 60px;
 	margin-bottom: 50px;
 	text-align: center;
@@ -193,6 +204,10 @@ h2 {
 	margin: 0;
 }
 
+#loadMessage {
+	z-index: 20 !important;
+}
+
 #main {
 	float: left;
 	height: 100%;
@@ -207,5 +222,15 @@ h2 {
 	height: 100%;
 	overflow-y: scroll;
 	width: 330px;
+}
+
+#sidebar > h1 {
+	margin-bottom: 4px;
+	position: relative;
+}
+
+#sidebar > h2 {
+	margin-bottom: 4px;
+	margin-top: 30px;
 }
 

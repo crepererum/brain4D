@@ -1,5 +1,5 @@
 /* jshint browser:true, camelcase:true, curly:true, eqeqeq:true, forin:true, latedef:true, newcap:true, noarg:true, noempty:true, nonew:true, quotmark:double, strict:true, trailing:true, undef:true, unused:true */
-/* global CSV, mat4, vec4 */
+/* global CSV, mat4, Modernizr, vec4 */
 var mode = 1;
 var wAxis = 1;
 var mouseActive = false;
@@ -21,6 +21,14 @@ function sgn(x) {
 		return -1;
 	} else {
 		return 0;
+	}
+}
+
+function removeElement(element) {
+	"use strict";
+
+	if (element) {
+		element.parentNode.removeChild(element);
 	}
 }
 
@@ -331,31 +339,7 @@ function mouseListenerScroll(evt) {
 	return false;
 }
 
-window.onerror = function(msg, url, line) {
-	"use strict";
-	var divError, h2Error, pMsg, pInfo;
-
-	if (document.getElementsByClassName("error").length === 0) {
-		divError = document.createElement("div");
-		h2Error = document.createElement("h2");
-		pMsg = document.createElement("p");
-		pInfo = document.createElement("p");
-
-		h2Error.appendChild(document.createTextNode("Error"));
-		pMsg.appendChild(document.createTextNode(msg));
-		pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
-
-		divError.classList.add("error");
-
-		divError.appendChild(h2Error);
-		divError.appendChild(pMsg);
-		divError.appendChild(pInfo);
-
-		document.body.appendChild(divError);
-	}
-};
-
-window.onload = function() {
+function setup() {
 	"use strict";
 	var reMode, reAxis, elementList, match, i, j;
 
@@ -500,5 +484,45 @@ window.onload = function() {
 		reset();
 		setBufferData(vertices);
 	});
+}
+
+window.onerror = function(msg, url, line) {
+	"use strict";
+	var divError, h2Error, pMsg, pInfo;
+
+	if (document.getElementsByClassName("error").length === 0) {
+		divError = document.createElement("div");
+		h2Error = document.createElement("h2");
+		pMsg = document.createElement("p");
+		pInfo = document.createElement("p");
+
+		h2Error.appendChild(document.createTextNode("Error"));
+		pMsg.appendChild(document.createTextNode(msg));
+		pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
+
+		divError.classList.add("errorMessage");
+		divError.classList.add("message");
+
+		divError.appendChild(h2Error);
+		divError.appendChild(pMsg);
+		divError.appendChild(pInfo);
+
+		document.body.appendChild(divError);
+	}
+};
+
+window.onload = function() {
+	"use strict";
+
+	if (Modernizr.csscalc && Modernizr.opacity && Modernizr.webgl) {
+		removeElement(document.getElementById("browserMessage"));
+
+		if (Modernizr.draganddrop) {
+			document.getElementById("dropzone").style.display = "block";
+		}
+
+		setup();
+		removeElement(document.getElementById("loadMessage"));
+	}
 };
 
