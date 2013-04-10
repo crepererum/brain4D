@@ -514,7 +514,7 @@ window.onerror = function(msg, url, line) {
 window.onload = function() {
 	"use strict";
 
-	if (Modernizr.csscalc && Modernizr.opacity && Modernizr.webgl) {
+	if (Modernizr.csscalc && Modernizr.opacity && Modernizr.webgl && window.requestAnimationFrame) {
 		removeElement(document.getElementById("browserMessage"));
 
 		if (Modernizr.draganddrop) {
