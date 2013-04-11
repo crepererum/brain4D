@@ -174,7 +174,6 @@ html, body {
 	background: #222;
 	display: none;
 	line-height: 60px;
-	margin-bottom: 50px;
 	text-align: center;
 	width: 100%;
 }
@@ -188,7 +187,8 @@ html, body {
 	bottom: 0;
 	color: #444;
 	font-size: 80%;
-	margin: 4px 20px;
+	height: 50px;
+	margin: 4px 10px;
 	position: absolute;
 	right: 0;
 	text-align: right;
@@ -202,6 +202,11 @@ html, body {
 
 #legal p {
 	margin: 0;
+}
+
+#legalPlaceholder {
+	height: 80px;
+	width: 100%;
 }
 
 #loadMessage {
@@ -224,12 +229,18 @@ html, body {
 	width: 330px;
 }
 
-#sidebar > h1 {
-	margin-bottom: 4px;
+#sidebar > div {
+	min-height: calc(100% - 30px);
 	position: relative;
 }
 
-#sidebar > h2 {
+#tools > h1 {
+	margin-bottom: 4px;
+	margin-top: 30px;
+	position: relative;
+}
+
+#tools > h2 {
 	margin-bottom: 4px;
 	margin-top: 30px;
 }
