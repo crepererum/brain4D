@@ -9,6 +9,7 @@ var rotMatrix, transVec;
 var lastX, lastY;
 
 var canvas;
+var borderSize = 0.5;
 
 var gl, shaderProgram, vbuffer;
 
@@ -84,7 +85,11 @@ function genProjectionMatrix(width, height) {
 	result = mat4.create();
 	factor1 = width / Math.min(width, height);
 	factor2 = height / Math.min(width, height);
-	mat4.ortho(result, -1.5 * factor1, 1.5 * factor1, -1.5 * factor2, 1.5 * factor2, -100, 100);
+	mat4.ortho(
+			result,
+			-(1.0 + borderSize) * factor1, (1.0 + borderSize) * factor1,
+			-(1.0 + borderSize) * factor2, (1.0 + borderSize) * factor2,
+			-100, 100);
 
 	return result;
 }
@@ -470,7 +475,11 @@ function setup() {
 			switch (mode) {
 				case 1:
 					dVec = vec4.create();
-					dVec.set([2.0 * dX / gl.viewportWidth, -2.0 * dY / gl.viewportHeight, 0.0, 0.0]);
+					dVec.set([
+						2.0 * (1.0 + borderSize) * dX / Math.min(canvas.clientWidth, canvas.clientHeight),
+						-2.0 * (1.0 + borderSize) * dY / Math.min(canvas.clientWidth, canvas.clientHeight),
+						0.0,
+						0.0]);
 					vec4.add(transVec, transVec, dVec);
 					break;
 
