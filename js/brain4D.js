@@ -455,12 +455,15 @@ function setup() {
 
 	document.getElementById("glcanvas").addEventListener("mousemove", function(evt){
 		if (mouseActive) {
-			var dX, dY, dVec, dMatrix;
+			var canvas, dX, dY, dVec, dMatrix, normPosX, normPosY;
 
+			canvas = document.getElementById("glcanvas");
 			dX = evt.clientX - lastX;
 			dY = evt.clientY - lastY;
 			lastX = evt.clientX;
 			lastY = evt.clientY;
+			normPosX = 2.0 * (evt.clientX - canvas.clientWidth / 2.0 - canvas.clientLeft) / canvas.clientWidth;
+			normPosY = 2.0 * (evt.clientY - canvas.clientHeight / 2.0 - canvas.clientTop) / canvas.clientHeight;
 
 			switch (mode) {
 				case 1:
@@ -477,8 +480,8 @@ function setup() {
 
 				case 3:
 					dMatrix = mat4.create();
-					dMatrix[0] += dX / gl.viewportWidth;
-					dMatrix[5] -= dY / gl.viewportHeight;
+					dMatrix[0] = (normPosX + 2.0 * dX / gl.viewportWidth) / normPosX;
+					dMatrix[5] = (normPosY + 2.0 * dY / gl.viewportHeight) / normPosY;
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 					break;
