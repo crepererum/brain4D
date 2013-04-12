@@ -8,6 +8,8 @@ var rotMatrix, transVec;
 
 var lastX, lastY;
 
+var canvas;
+
 var gl, shaderProgram, vbuffer;
 
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
@@ -195,7 +197,7 @@ function setMode(x) {
 			cursor = "crosshair";
 			break;
 	}
-	document.getElementById("glcanvas").style.cursor = cursor;
+	canvas.style.cursor = cursor;
 
 	setActive(x, "mode");
 	mode = x;
@@ -227,9 +229,8 @@ function setBufferData(vertices) {
 
 function initGl(vertices) {
 	"use strict";
-	var canvas, fragmentShader, vertexShader;
+	var fragmentShader, vertexShader;
 
-	canvas = document.getElementById("glcanvas");
 	canvas.width = canvas.clientWidth;
 	canvas.height = canvas.clientHeight;
 	gl = canvas.getContext("experimental-webgl");
@@ -353,6 +354,8 @@ function setup() {
 	"use strict";
 	var reMode, reAxis, elementList, match, i, j;
 
+	canvas = document.getElementById("glcanvas");
+
 	reset();
 	setActive(wAxis, "axis");
 	setMode(mode);
@@ -432,7 +435,7 @@ function setup() {
 	initGl([]);
 	window.requestAnimationFrame(draw);
 
-	document.getElementById("glcanvas").addEventListener("mousedown", function(evt){
+	canvas.addEventListener("mousedown", function(evt){
 		evt.preventDefault();
 		if (evt.which === 1) {
 			lastX = evt.clientX;
@@ -445,7 +448,7 @@ function setup() {
 		return false;
 	}, false);
 
-	document.getElementById("glcanvas").addEventListener("mouseup", function(evt){
+	canvas.addEventListener("mouseup", function(evt){
 		evt.preventDefault();
 		if (evt.which === 1) {
 			mouseActive = false;
@@ -453,11 +456,10 @@ function setup() {
 		return false;
 	}, false);
 
-	document.getElementById("glcanvas").addEventListener("mousemove", function(evt){
+	canvas.addEventListener("mousemove", function(evt){
 		if (mouseActive) {
-			var canvas, dX, dY, dVec, dMatrix, normPosX, normPosY;
+			var dX, dY, dVec, dMatrix, normPosX, normPosY;
 
-			canvas = document.getElementById("glcanvas");
 			dX = evt.clientX - lastX;
 			dY = evt.clientY - lastY;
 			lastX = evt.clientX;
@@ -489,8 +491,8 @@ function setup() {
 		}
 	}, false);
 
-	document.getElementById("glcanvas").addEventListener("mousewheel", mouseListenerScroll, false);
-	document.getElementById("glcanvas").addEventListener("wheel", mouseListenerScroll, false);
+	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
+	canvas.addEventListener("wheel", mouseListenerScroll, false);
 
 	readFile("data/breast_pca.csv", function(raw){
 		var vertices = parseCsv(raw);
