@@ -43,6 +43,10 @@ html, body {
 	z-index: 25 !important;
 }
 
+.errorMessage a {
+	color: red !important;
+}
+
 .logoB, .logoR, .logoA, .logoI, .logoN, .logo4, .logoD {
 	text-shadow: 0 0 2px #000;
 }
@@ -109,11 +113,11 @@ html, body {
 	z-index: -10;
 }
 
-.message > h2 {
+.message h2 {
 	margin-top: 50px;
 }
 
-.message > p {
+.message > div {
 	display: inline-block;
 	max-width: 600px;
 }

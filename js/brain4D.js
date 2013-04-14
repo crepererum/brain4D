@@ -534,24 +534,37 @@ function setup() {
 
 window.onerror = function(msg, url, line) {
 	"use strict";
-	var divError, h2Error, pMsg, pInfo;
+	var aRepo, divError, divWrapper, h2Error, pBug, pMsg, pInfo;
 
 	if (document.getElementsByClassName("error").length === 0) {
 		divError = document.createElement("div");
+		divWrapper = document.createElement("div");
 		h2Error = document.createElement("h2");
 		pMsg = document.createElement("p");
 		pInfo = document.createElement("p");
+		pBug = document.createElement("p");
+		aRepo = document.createElement("a");
 
 		h2Error.appendChild(document.createTextNode("Error"));
 		pMsg.appendChild(document.createTextNode(msg));
 		pInfo.appendChild(document.createTextNode("(" + url + ":" + line + ")"));
+		pBug.appendChild(document.createTextNode("If you think this is a bug, please report it here: "));
+		aRepo.appendChild(document.createTextNode("https://github.com/crepererum/brain4D"));
+
+		aRepo.href = "https://github.com/crepererum/brain4D";
+		aRepo.target = "_blank";
 
 		divError.classList.add("errorMessage");
 		divError.classList.add("message");
 
-		divError.appendChild(h2Error);
-		divError.appendChild(pMsg);
-		divError.appendChild(pInfo);
+		pBug.appendChild(aRepo);
+
+		divWrapper.appendChild(h2Error);
+		divWrapper.appendChild(pMsg);
+		divWrapper.appendChild(pInfo);
+		divWrapper.appendChild(pBug);
+
+		divError.appendChild(divWrapper);
 
 		document.body.appendChild(divError);
 	}
