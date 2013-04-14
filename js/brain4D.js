@@ -137,8 +137,21 @@ function reset() {
 	transVec = vec4.create();
 }
 
+function updateViewportSize() {
+	"use strict";
+
+	canvas.width = canvas.clientWidth;
+	canvas.height = canvas.clientHeight;
+	gl.viewportWidth = canvas.width;
+	gl.viewportHeight = canvas.height;
+}
+
 function draw() {
 	"use strict";
+
+	if ((canvas.clientWidth !== gl.viewportWidth) || (canvas.clientHeight !== gl.viewportHeight)) {
+		updateViewportSize();
+	}
 
 	gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -236,12 +249,15 @@ function initGl(vertices) {
 	"use strict";
 	var fragmentShader, vertexShader;
 
-	canvas.width = canvas.clientWidth;
-	canvas.height = canvas.clientHeight;
 	gl = canvas.getContext("experimental-webgl");
-	gl.viewportWidth = canvas.width;
-	gl.viewportHeight = canvas.height;
+	updateViewportSize();
 	gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
+	gl.enable(gl.DEPTH_TEST);
+	gl.enable(gl.BLEND);
+	gl.enable(gl.POINTS_SMOOTH);
+
+	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
 	fragmentShader = getShader(gl, "shader-fs");
 	vertexShader = getShader(gl, "shader-vs");
@@ -260,12 +276,6 @@ function initGl(vertices) {
 	shaderProgram.projMatrixUnif = gl.getUniformLocation(shaderProgram, "projMatrix");
 
 	setBufferData(vertices);
-
-	gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-	gl.enable(gl.DEPTH_TEST);
-	gl.enable(gl.BLEND);
-	gl.enable(gl.POINTS_SMOOTH);
 }
 
 function parseCsv(raw) {
