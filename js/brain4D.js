@@ -327,26 +327,34 @@ function mouseListenerScroll(evt) {
 
 	evt.preventDefault();
 
-	deltaX = sgn(evt.deltaX || evt.wheelDeltaX) * 0.1;
-	deltaY = sgn(evt.deltaY || evt.wheelDeltaY) * 0.1;
+	deltaX = sgn(evt.deltaX || evt.wheelDeltaX);
+	deltaY = sgn(evt.deltaY || evt.wheelDeltaY);
 
 	switch (mode) {
 		case 1:
 			dVec = vec4.create();
-			dVec.set([0.0, 0.0, deltaX, deltaY]);
+			dVec.set([
+					0.0,
+					0.0,
+					deltaX / 10.0,
+					deltaY / 10.0]);
 			vec4.add(transVec, transVec, dVec);
 			break;
 
 		case 2:
-			dMatrix =  genRotationMatrix(0.0, 0.0, deltaX, deltaY);
+			dMatrix =  genRotationMatrix(
+					0.0,
+					0.0,
+					deltaX * 2.0 * Math.PI / 40.0,
+					deltaY * 2.0 * Math.PI / 40.0);
 			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 			vec4.transformMat4(transVec, transVec, dMatrix);
 			break;
 
 		case 3:
 			dMatrix = mat4.create();
-			dMatrix[10] += deltaX;
-			dMatrix[15] += deltaY;
+			dMatrix[10] += deltaX / 8.0;
+			dMatrix[15] += deltaY / 8.0;
 			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 			vec4.transformMat4(transVec, transVec, dMatrix);
 			break;
@@ -484,7 +492,11 @@ function setup() {
 					break;
 
 				case 2:
-					dMatrix = genRotationMatrix(dY / 50.0, dX / 50.0, 0.0, 0.0);
+					dMatrix = genRotationMatrix(
+							dY / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
+							dX / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
+							0.0,
+							0.0);
 					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 					vec4.transformMat4(transVec, transVec, dMatrix);
 					break;
