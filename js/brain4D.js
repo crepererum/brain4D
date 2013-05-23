@@ -525,7 +525,7 @@ function setup() {
 	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
 	canvas.addEventListener("wheel", mouseListenerScroll, false);
 
-	readFile("data/breast_pca.csv", function(raw){
+	readFile("data/" + (window.location.hash.substr(1) || "breast_pca.csv"), function(raw){
 		var vertices = parseCsv(raw);
 		reset();
 		setBufferData(vertices);
