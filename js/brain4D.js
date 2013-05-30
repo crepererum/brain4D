@@ -13,6 +13,8 @@ var borderSize = 0.5;
 
 var gl, shaderProgram, vbuffer;
 
+var config;
+
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
 
 Modernizr.addTest("mywebgl", function(){
@@ -375,9 +377,9 @@ function mouseListenerScroll(evt) {
 
 function reloadData() {
 	"use strict";
-	var fname = window.location.hash.substr(1) || "breast_pca.csv";
+	var set = window.location.hash.substr(1) || config.datasets[0];
 
-	readFile("data/" + fname, function(raw){
+	readFile("data/" + set + ".csv", function(raw){
 		var vertices = parseCsv(raw);
 		reset();
 		setBufferData(vertices);
@@ -588,8 +590,11 @@ window.onload = function() {
 			document.getElementById("dropzone").style.display = "block";
 		}
 
-		setup();
-		removeElement(document.getElementById("loadMessage"));
+		readFile("config.json", function(data) {
+			config = JSON.parse(data);
+			setup();
+			removeElement(document.getElementById("loadMessage"));
+		});
 	}
 };
 
