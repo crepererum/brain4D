@@ -233,6 +233,9 @@ html, body {
 }
 
 #prepared select {
+	background: #222;
+	border: 0;
+	color: gray;
 	width: 100%;
 }
 
