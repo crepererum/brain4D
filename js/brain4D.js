@@ -538,6 +538,17 @@ function setup() {
 	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
 	canvas.addEventListener("wheel", mouseListenerScroll, false);
 
+	document.getElementById("datasets").onchange = function() {
+		var list, next;
+
+		list = document.getElementById("datasets");
+		next = list.options[list.selectedIndex].value;
+
+		if (next !== window.location.hash) {
+			window.location.hash = next;
+		}
+	};
+
 	window.onhashchange = reloadData;
 	reloadData();
 }
@@ -591,7 +602,17 @@ window.onload = function() {
 		}
 
 		readFile("config.json", function(data) {
+			var i, list, option;
 			config = JSON.parse(data);
+
+			list = document.getElementById("datasets");
+			for (i = 0; i < config.datasets.length; ++i) {
+				option = document.createElement("option");
+				option.appendChild(document.createTextNode(config.datasets[i]));
+				option.value = config.datasets[i];
+				list.appendChild(option);
+			}
+
 			setup();
 			removeElement(document.getElementById("loadMessage"));
 		});

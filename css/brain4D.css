@@ -224,6 +224,18 @@ html, body {
 	width: calc(100% - 330px);
 }
 
+#prepared {
+	margin-bottom: 1em;
+}
+
+#prepared p {
+	margin: 0;
+}
+
+#prepared select {
+	width: 100%;
+}
+
 #sidebar {
 	background: black;
 	color: gray;
