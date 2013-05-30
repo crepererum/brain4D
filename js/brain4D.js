@@ -373,6 +373,17 @@ function mouseListenerScroll(evt) {
 	return false;
 }
 
+function reloadData() {
+	"use strict";
+	var fname = window.location.hash.substr(1) || "breast_pca.csv";
+
+	readFile("data/" + fname, function(raw){
+		var vertices = parseCsv(raw);
+		reset();
+		setBufferData(vertices);
+	});
+}
+
 function setup() {
 	"use strict";
 	var reMode, reAxis, elementList, match, i, j;
@@ -525,11 +536,8 @@ function setup() {
 	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
 	canvas.addEventListener("wheel", mouseListenerScroll, false);
 
-	readFile("data/" + (window.location.hash.substr(1) || "breast_pca.csv"), function(raw){
-		var vertices = parseCsv(raw);
-		reset();
-		setBufferData(vertices);
-	});
+	window.onhashchange = reloadData;
+	reloadData();
 }
 
 window.onerror = function(msg, url, line) {
