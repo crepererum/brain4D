@@ -333,6 +333,72 @@ function buttonListenerMode(target) {
 	setMode(target.modeId);
 }
 
+function eventListenerDown(eventMode, clientX, clientY) {
+	"use strict";
+
+	if (eventMode === 1) {
+		lastX = clientX;
+		lastY = clientY;
+		mouseActive = true;
+	} else if (eventMode === 2) {
+		wAxis = (wAxis + 1) % 3;
+		setActive(wAxis, "axis");
+	}
+}
+
+function eventListenerUp(eventMode) {
+	"use strict";
+
+	if (eventMode === 1) {
+		mouseActive = false;
+	}
+}
+
+function eventListenerMove(clientX, clientY) {
+	"use strict";
+
+	if (mouseActive) {
+		var dX, dY, dVec, dMatrix, normPosX, normPosY;
+
+		dX = clientX - lastX;
+		dY = clientY - lastY;
+		lastX = clientX;
+		lastY = clientY;
+		normPosX = 2.0 * (clientX - canvas.clientWidth / 2.0 - canvas.clientLeft) / canvas.clientWidth;
+		normPosY = 2.0 * (clientY - canvas.clientHeight / 2.0 - canvas.clientTop) / canvas.clientHeight;
+
+		switch (mode) {
+			case 1:
+				dVec = vec4.create();
+				dVec.set([
+					2.0 * (1.0 + borderSize) * dX / Math.min(canvas.clientWidth, canvas.clientHeight),
+					-2.0 * (1.0 + borderSize) * dY / Math.min(canvas.clientWidth, canvas.clientHeight),
+					0.0,
+					0.0]);
+				vec4.add(transVec, transVec, dVec);
+				break;
+
+			case 2:
+				dMatrix = genRotationMatrix(
+						dY / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
+						dX / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
+						0.0,
+						0.0);
+				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+				vec4.transformMat4(transVec, transVec, dMatrix);
+				break;
+
+			case 3:
+				dMatrix = mat4.create();
+				dMatrix[0] = (normPosX + 2.0 * dX / gl.viewportWidth) / normPosX;
+				dMatrix[5] = (normPosY + 2.0 * dY / gl.viewportHeight) / normPosY;
+				mat4.multiply(rotMatrix, dMatrix, rotMatrix);
+				vec4.transformMat4(transVec, transVec, dMatrix);
+				break;
+		}
+	}
+}
+
 function mouseListenerScroll(evt) {
 	"use strict";
 	var dVec, dMatrix, deltaX, deltaY;
@@ -473,67 +539,35 @@ function setup() {
 
 	canvas.addEventListener("mousedown", function(evt){
 		evt.preventDefault();
-		if (evt.which === 1) {
-			lastX = evt.clientX;
-			lastY = evt.clientY;
-			mouseActive = true;
-		} else if (evt.which === 2) {
-			wAxis = (wAxis + 1) % 3;
-			setActive(wAxis, "axis");
-		}
+		eventListenerDown(evt.which, evt.clientX, evt.clientY);
 		return false;
 	}, false);
+	canvas.addEventListener("touchstart", function(evt){
+		var mode = 1;
+
+		if (evt.touches.length === 3) {
+			mode = 2;
+		}
+
+		evt.preventDefault();
+		eventListenerDown(mode, evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
+	});
 
 	canvas.addEventListener("mouseup", function(evt){
 		evt.preventDefault();
-		if (evt.which === 1) {
-			mouseActive = false;
-		}
+		eventListenerUp(evt.which);
 		return false;
 	}, false);
+	canvas.addEventListener("touchstop", function(){
+		eventListenerDown(1);
+	});
 
 	canvas.addEventListener("mousemove", function(evt){
-		if (mouseActive) {
-			var dX, dY, dVec, dMatrix, normPosX, normPosY;
-
-			dX = evt.clientX - lastX;
-			dY = evt.clientY - lastY;
-			lastX = evt.clientX;
-			lastY = evt.clientY;
-			normPosX = 2.0 * (evt.clientX - canvas.clientWidth / 2.0 - canvas.clientLeft) / canvas.clientWidth;
-			normPosY = 2.0 * (evt.clientY - canvas.clientHeight / 2.0 - canvas.clientTop) / canvas.clientHeight;
-
-			switch (mode) {
-				case 1:
-					dVec = vec4.create();
-					dVec.set([
-						2.0 * (1.0 + borderSize) * dX / Math.min(canvas.clientWidth, canvas.clientHeight),
-						-2.0 * (1.0 + borderSize) * dY / Math.min(canvas.clientWidth, canvas.clientHeight),
-						0.0,
-						0.0]);
-					vec4.add(transVec, transVec, dVec);
-					break;
-
-				case 2:
-					dMatrix = genRotationMatrix(
-							dY / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
-							dX / Math.min(canvas.clientWidth, canvas.clientHeight) * 4.0 * Math.PI,
-							0.0,
-							0.0);
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
-					break;
-
-				case 3:
-					dMatrix = mat4.create();
-					dMatrix[0] = (normPosX + 2.0 * dX / gl.viewportWidth) / normPosX;
-					dMatrix[5] = (normPosY + 2.0 * dY / gl.viewportHeight) / normPosY;
-					mat4.multiply(rotMatrix, dMatrix, rotMatrix);
-					vec4.transformMat4(transVec, transVec, dMatrix);
-					break;
-			}
-		}
+		eventListenerMove(evt.clientX, evt.clientY);
 	}, false);
+	canvas.addEventListener("touchmove", function(evt){
+		eventListenerMove(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
+	});
 
 	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
 	canvas.addEventListener("wheel", mouseListenerScroll, false);
