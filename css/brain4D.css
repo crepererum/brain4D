@@ -1,6 +1,7 @@
 /*csslint ids: false, important:false, qualified-headings:false, unique-headings:false*/
 
 html, body {
+	background: black;
 	height: 100%;
 	overflow: hidden;
 	width: 100%;
