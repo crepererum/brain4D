@@ -7,6 +7,7 @@ var mouseActive = false;
 var rotMatrix, transVec;
 
 var lastX, lastY;
+var touchPDeltaX, touchPDeltaY;
 
 var canvas;
 var borderSize = 0.5;
@@ -399,14 +400,12 @@ function eventListenerMove(clientX, clientY) {
 	}
 }
 
-function mouseListenerScroll(evt) {
+function eventListenerScroll(deltaX, deltaY) {
 	"use strict";
-	var dVec, dMatrix, deltaX, deltaY;
+	var dVec, dMatrix;
 
-	evt.preventDefault();
-
-	deltaX = sgn(evt.deltaX || evt.wheelDeltaX);
-	deltaY = sgn(evt.deltaY || evt.wheelDeltaY);
+	deltaX = sgn(deltaX);
+	deltaY = sgn(deltaY);
 
 	switch (mode) {
 		case 1:
@@ -545,12 +544,17 @@ function setup() {
 	canvas.addEventListener("touchstart", function(evt){
 		var mode = 1;
 
-		if (evt.touches.length === 3) {
+		if (evt.touches.length === 2) {
+			touchPDeltaX = evt.touches[0].clientX - evt.touches[1].clientX;
+			touchPDeltaY = evt.touches[0].clientY - evt.touches[1].clientY;
+			mode = 3;
+		} else if (evt.touches.length === 3) {
 			mode = 2;
 		}
 
 		evt.preventDefault();
 		eventListenerDown(mode, evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
+
 	});
 
 	canvas.addEventListener("mouseup", function(evt){
@@ -566,11 +570,33 @@ function setup() {
 		eventListenerMove(evt.clientX, evt.clientY);
 	}, false);
 	canvas.addEventListener("touchmove", function(evt){
-		eventListenerMove(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
+		var dX, dY, tmpX, tmpY;
+
+		if (evt.touches.length === 2) {
+			tmpX = evt.touches[0].clientX - evt.touches[1].clientX;
+			tmpY = evt.touches[0].clientY - evt.touches[1].clientY;
+			dX = tmpX - touchPDeltaX;
+			dY = tmpY - touchPDeltaY;
+
+			if (dX * dX + dY * dY >= 100) {
+				eventListenerScroll(tmpX - touchPDeltaX, tmpY - touchPDeltaY);
+
+				touchPDeltaX = tmpX;
+				touchPDeltaY = tmpY;
+			}
+		} else {
+			eventListenerMove(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
+		}
 	});
 
-	canvas.addEventListener("mousewheel", mouseListenerScroll, false);
-	canvas.addEventListener("wheel", mouseListenerScroll, false);
+	canvas.addEventListener("mousewheel", function(evt){
+		evt.preventDefault();
+		eventListenerScroll(evt.deltaX || evt.wheelDeltaY, evt.deltaY || evt.wheelDeltaX);
+	}, false);
+	canvas.addEventListener("wheel", function(evt){
+		evt.preventDefault();
+		eventListenerScroll(evt.deltaX || evt.wheelDeltaY, evt.deltaY || evt.wheelDeltaX);
+	}, false);
 
 	document.getElementById("datasets").onchange = function() {
 		var list, next;
