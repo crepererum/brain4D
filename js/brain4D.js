@@ -3,6 +3,7 @@
 var mode = 1;
 var wAxis = 1;
 var mouseActive = false;
+var pinchActive = false;
 
 var rotMatrix, transVec;
 
@@ -337,22 +338,28 @@ function buttonListenerMode(target) {
 function eventListenerDown(eventMode, clientX, clientY) {
 	"use strict";
 
-	if (eventMode === 1) {
-		lastX = clientX;
-		lastY = clientY;
-		mouseActive = true;
-	} else if (eventMode === 2) {
-		wAxis = (wAxis + 1) % 3;
-		setActive(wAxis, "axis");
+	switch (eventMode) {
+		case 1:
+			lastX = clientX;
+			lastY = clientY;
+			mouseActive = true;
+			pinchActive = false;
+			break;
+		case 2:
+			wAxis = (wAxis + 1) % 3;
+			setActive(wAxis, "axis");
+			break;
+		case 3:
+			pinchActive = true;
+			break;
 	}
 }
 
-function eventListenerUp(eventMode) {
+function eventListenerUp() {
 	"use strict";
 
-	if (eventMode === 1) {
-		mouseActive = false;
-	}
+	mouseActive = false;
+	pinchActive = false;
 }
 
 function eventListenerMove(clientX, clientY) {
@@ -403,9 +410,6 @@ function eventListenerMove(clientX, clientY) {
 function eventListenerScroll(deltaX, deltaY) {
 	"use strict";
 	var dVec, dMatrix;
-
-	deltaX = sgn(deltaX);
-	deltaY = sgn(deltaY);
 
 	switch (mode) {
 		case 1:
@@ -559,43 +563,41 @@ function setup() {
 
 	canvas.addEventListener("mouseup", function(evt){
 		evt.preventDefault();
-		eventListenerUp(evt.which);
+		eventListenerUp();
 		return false;
 	}, false);
-	canvas.addEventListener("touchstop", function(){
-		eventListenerDown(1);
+	canvas.addEventListener("touchend", function(){
+		eventListenerDown();
 	});
 
 	canvas.addEventListener("mousemove", function(evt){
 		eventListenerMove(evt.clientX, evt.clientY);
 	}, false);
 	canvas.addEventListener("touchmove", function(evt){
-		var dX, dY, tmpX, tmpY;
+		var tmpX, tmpY;
 
 		if (evt.touches.length === 2) {
 			tmpX = evt.touches[0].clientX - evt.touches[1].clientX;
 			tmpY = evt.touches[0].clientY - evt.touches[1].clientY;
-			dX = tmpX - touchPDeltaX;
-			dY = tmpY - touchPDeltaY;
 
-			if (dX * dX + dY * dY >= 100) {
-				eventListenerScroll(tmpX - touchPDeltaX, tmpY - touchPDeltaY);
+			eventListenerScroll((tmpX - touchPDeltaX) / 40.0, (tmpY - touchPDeltaY) / 40.0);
 
-				touchPDeltaX = tmpX;
-				touchPDeltaY = tmpY;
-			}
-		} else {
+			touchPDeltaX = tmpX;
+			touchPDeltaY = tmpY;
+		}
+
+		if (!pinchActive) {
 			eventListenerMove(evt.changedTouches[0].clientX, evt.changedTouches[0].clientY);
 		}
 	});
 
 	canvas.addEventListener("mousewheel", function(evt){
 		evt.preventDefault();
-		eventListenerScroll(evt.deltaX || evt.wheelDeltaY, evt.deltaY || evt.wheelDeltaX);
+		eventListenerScroll(sgn(evt.wheelDeltaY), sgn(evt.wheelDeltaX));
 	}, false);
 	canvas.addEventListener("wheel", function(evt){
 		evt.preventDefault();
-		eventListenerScroll(evt.deltaX || evt.wheelDeltaY, evt.deltaY || evt.wheelDeltaX);
+		eventListenerScroll(sgn(evt.deltaX), sgn(evt.deltaY));
 	}, false);
 
 	document.getElementById("datasets").onchange = function() {
