@@ -426,8 +426,8 @@ function eventListenerScroll(deltaX, deltaY) {
 			dMatrix =  genRotationMatrix(
 					0.0,
 					0.0,
-					deltaX * 2.0 * Math.PI / 40.0,
-					deltaY * 2.0 * Math.PI / 40.0);
+					deltaY * 2.0 * Math.PI / 40.0,
+					deltaX * 2.0 * Math.PI / 40.0);
 			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 			vec4.transformMat4(transVec, transVec, dMatrix);
 			break;
