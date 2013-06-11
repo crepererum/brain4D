@@ -1,7 +1,8 @@
 {
 	"datasets": [
 		"breast_pca",
-		"constructed"
+		"constructed",
+		"constructed_pca"
 	]
 }
 
