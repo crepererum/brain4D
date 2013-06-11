@@ -1,7 +1,7 @@
 /* jshint browser:true, camelcase:true, curly:true, eqeqeq:true, forin:true, latedef:true, newcap:true, noarg:true, noempty:true, nonew:true, quotmark:double, strict:true, trailing:true, undef:true, unused:true */
 /* global CSV, mat4, Modernizr, vec4 */
-var mode = 1;
-var wAxis = 1;
+var mode = 2;
+var wAxis = 2;
 var mouseActive = false;
 var pinchActive = false;
 
