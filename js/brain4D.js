@@ -241,12 +241,10 @@ function initGl(vertices) {
 	"use strict";
 	var fragmentShader, vertexShader;
 
-	gl = canvas.getContext("experimental-webgl");
+	gl = canvas.getContext("webgl");
 	updateViewportSize();
-	gl.enable(gl.VERTEX_PROGRAM_POINT_SIZE);
 	gl.enable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
-	gl.enable(gl.POINTS_SMOOTH);
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -585,7 +583,7 @@ function setup() {
 	}, false);
 	canvas.addEventListener("wheel", function(evt){
 		evt.preventDefault();
-		eventListenerScroll(sgn(evt.deltaX), sgn(evt.deltaY));
+		eventListenerScroll(sgn(evt.deltaY), sgn(evt.deltaX));
 	}, false);
 
 	document.getElementById("datasets").onchange = function() {
