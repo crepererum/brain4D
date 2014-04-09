@@ -17,18 +17,6 @@ var gl, shaderProgram, vbuffer;
 
 var config;
 
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
-
-Modernizr.addTest("mywebgl", function(){
-	"use strict";
-
-	try {
-		return !!window.WebGLRenderingContext && !!document.createElement("canvas").getContext("experimental-webgl");
-	} catch(e) {
-		return false;
-	}
-});
-
 function sgn(x) {
 	"use strict";
 
@@ -656,7 +644,7 @@ window.onerror = function(msg, url, line) {
 window.onload = function() {
 	"use strict";
 
-	if (Modernizr.csscalc && Modernizr.opacity && Modernizr.mywebgl && Modernizr.raf) {
+	if (Modernizr.csscalc && Modernizr.opacity && Modernizr.webgl && Modernizr.raf) {
 		removeElement(document.getElementById("browserMessage"));
 
 		if (Modernizr.draganddrop) {
