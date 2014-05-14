@@ -1,8 +1,17 @@
 {
-	"datasets": [
-		"breast_pca",
-		"constructed",
-		"constructed_pca"
-	]
+	"datasets": {
+		"breast_pca": {
+            "title": "Breast (PCA)",
+            "description": "Simple real world dataset"
+        },
+		"constructed": {
+            "title": "Constructed",
+            "description": "Constructed dataset. Pattern: (x + y + z + w) mod 1 = 0"
+        },
+		"constructed_pca": {
+            "title": "Constructed (PCA)",
+            "description": "Same as 'Constructed', but processed using PCA"
+        }
+    }
 }
 

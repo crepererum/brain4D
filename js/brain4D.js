@@ -432,12 +432,17 @@ function eventListenerScroll(deltaX, deltaY) {
 
 function reloadData() {
 	"use strict";
-	var set = window.location.hash.substr(1) || config.datasets[0];
+	var set = window.location.hash.substr(1) || Object.keys(config.datasets)[0];
 
 	readFile("data/" + set + ".csv", function(raw){
 		var vertices = parseCsv(raw);
 		reset();
 		setBufferData(vertices);
+
+        document.getElementById("datasets").value = set;
+        document.getElementById("prepared_title").innerHTML = config.datasets[set].title;
+        document.getElementById("prepared_description").innerHTML = config.datasets[set].description;
+        document.getElementById("prepared_info").style.display = "";
 	});
 }
 
@@ -492,6 +497,8 @@ function setup() {
 				var vertices = parseCsv(evt.target.result);
 				reset();
 				setBufferData(vertices);
+
+                document.getElementById("prepared_info").style.display = "none";
 			};
 			reader.readAsText(file);
 		}
@@ -650,14 +657,18 @@ window.onload = function() {
 		}
 
 		readFile("config.json", function(data) {
-			var i, list, option;
+			var i, list, option, set, setIds;
 			config = JSON.parse(data);
 
 			list = document.getElementById("datasets");
-			for (i = 0; i < config.datasets.length; ++i) {
+            setIds = Object.keys(config.datasets);
+			for (i = 0; i < setIds.length; ++i) {
+                set = setIds[i];
+
 				option = document.createElement("option");
-				option.appendChild(document.createTextNode(config.datasets[i]));
-				option.value = config.datasets[i];
+				option.appendChild(document.createTextNode(config.datasets[set].title));
+				option.value = set;
+
 				list.appendChild(option);
 			}
 
