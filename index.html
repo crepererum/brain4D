@@ -41,7 +41,9 @@
 			void main(void) {
 				realPos = rotMatrix * aVertexPosition + transVec;
 				gl_Position = projMatrix * vec4(vec3(realPos), 1.0);
-				gl_PointSize = 4.0 + 2.0 * realPos[2];
+                gl_PointSize = realPos[2] < 4.0
+                    ? 15.0 / (4.0 - realPos[2])
+                    : 0.0;
 			}
 		</script>
 	</head>
