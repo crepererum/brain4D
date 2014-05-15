@@ -5,7 +5,7 @@ var wAxis = 2;
 var mouseActive = false;
 var pinchActive = false;
 
-var rotMatrix, transVec;
+var rotMatrix, screenVec, transVec;
 
 var lastX, lastY;
 var touchPDeltaX, touchPDeltaY;
@@ -136,6 +136,10 @@ function updateViewportSize() {
 	canvas.height = canvas.clientHeight;
 	gl.viewportWidth = canvas.width;
 	gl.viewportHeight = canvas.height;
+
+	screenVec = vec2.create();
+	screenVec[0] = canvas.width;
+	screenVec[1] = canvas.height;
 }
 
 function draw() {
@@ -153,6 +157,7 @@ function draw() {
 	gl.uniformMatrix4fv(shaderProgram.rotMatrixUnif, false, rotMatrix);
 	gl.uniform4fv(shaderProgram.transVecUnif, transVec);
 	gl.uniformMatrix4fv(shaderProgram.projMatrixUnif, false, genProjectionMatrix(gl.viewportWidth, gl.viewportHeight));
+	gl.uniform2fv(shaderProgram.screenSizeUnif, screenVec);
 	gl.drawArrays(gl.POINTS, 0, vbuffer.numItems);
 
 	window.requestAnimationFrame(draw);
@@ -243,11 +248,11 @@ function initGl(vertices) {
 
 	gl = canvas.getContext("webgl");
 	updateViewportSize();
-	gl.enable(gl.DEPTH_TEST);
+	gl.disable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
 
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
-	gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 	fragmentShader = getShader(gl, "shader-fs");
 	vertexShader = getShader(gl, "shader-vs");
@@ -264,6 +269,7 @@ function initGl(vertices) {
 	shaderProgram.rotMatrixUnif = gl.getUniformLocation(shaderProgram, "rotMatrix");
 	shaderProgram.transVecUnif = gl.getUniformLocation(shaderProgram, "transVec");
 	shaderProgram.projMatrixUnif = gl.getUniformLocation(shaderProgram, "projMatrix");
+	shaderProgram.screenSizeUnif = gl.getUniformLocation(shaderProgram, "screenSize");
 
 	setBufferData(vertices);
 }
@@ -439,10 +445,10 @@ function reloadData() {
 		reset();
 		setBufferData(vertices);
 
-        document.getElementById("datasets").value = set;
-        document.getElementById("prepared_title").innerHTML = config.datasets[set].title;
-        document.getElementById("prepared_description").innerHTML = config.datasets[set].description;
-        document.getElementById("prepared_info").style.display = "";
+		document.getElementById("datasets").value = set;
+		document.getElementById("prepared_title").innerHTML = config.datasets[set].title;
+		document.getElementById("prepared_description").innerHTML = config.datasets[set].description;
+		document.getElementById("prepared_info").style.display = "";
 	});
 }
 
@@ -498,7 +504,7 @@ function setup() {
 				reset();
 				setBufferData(vertices);
 
-                document.getElementById("prepared_info").style.display = "none";
+				document.getElementById("prepared_info").style.display = "none";
 			};
 			reader.readAsText(file);
 		}
@@ -661,9 +667,9 @@ window.onload = function() {
 			config = JSON.parse(data);
 
 			list = document.getElementById("datasets");
-            setIds = Object.keys(config.datasets);
+			setIds = Object.keys(config.datasets);
 			for (i = 0; i < setIds.length; ++i) {
-                set = setIds[i];
+				set = setIds[i];
 
 				option = document.createElement("option");
 				option.appendChild(document.createTextNode(config.datasets[set].title));

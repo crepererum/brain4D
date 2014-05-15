@@ -13,12 +13,17 @@
 		<script id="shader-fs" type="x-shader/x-fragment">
 			precision mediump float;
 
+			uniform vec2 screenSize;
+
 			varying vec4 realPos;
+			varying float projSize;
+			varying vec2 projPos;
 
 			void main(void) {
 				float red = 1.0;
 				float blue = 1.0;
 				float green = 1.0;
+				float alpha = (1.0 - abs(realPos[3]));
 				if (realPos[3] > 0.0) {
 					blue = 1.0 - realPos[3];
 					green = 1.0 - realPos[3];
@@ -26,7 +31,14 @@
 					red = 1.0 + realPos[3];
 					green = 1.0 + realPos[3];
 				}
-				gl_FragColor = vec4(red, green, blue, 1.0 - abs(realPos[3]));
+
+				vec2 pos = mod(gl_FragCoord.xy - (vec2(1.0) + projPos) * screenSize / 2.0 + vec2(projSize / 2.0), vec2(projSize)) - vec2(projSize / 2.0);
+				float dist_squared = dot(pos, pos);
+				float e1 = projSize / 2.5;
+				float e2 = projSize / 2.0;
+				float fade = 1.0 - smoothstep(e1 * e1, e2 * e2, dist_squared);
+
+				gl_FragColor = vec4(red, green, blue, fade * alpha);
 			}
 		</script>
 		<script id="shader-vs" type="x-shader/x-vertex">
@@ -37,13 +49,16 @@
 			uniform mat4 projMatrix;
 
 			varying vec4 realPos;
+			varying float projSize;
+			varying vec2 projPos;
 
 			void main(void) {
 				realPos = rotMatrix * aVertexPosition + transVec;
 				gl_Position = projMatrix * vec4(vec3(realPos), 1.0);
-                gl_PointSize = realPos[2] < 4.0
-                    ? 15.0 / (4.0 - realPos[2])
-                    : 0.0;
+				projPos = gl_Position.xy;
+
+				projSize = max(0.0, 20.0 / (4.0 - realPos[2]));
+				gl_PointSize = projSize;
 			}
 		</script>
 	</head>
@@ -91,10 +106,10 @@
 						<div id="prepared">
 							<p>Load prepared data:</p>
 							<select id="datasets"></select>
-                            <div id="prepared_info">
-                                <h3 id="prepared_title"></h3>
-                                <p id="prepared_description"></p>
-                            </div>
+							<div id="prepared_info">
+								<h3 id="prepared_title"></h3>
+								<p id="prepared_description"></p>
+							</div>
 						</div>
 						<div id="dropzone">...or drop your CSV file here!</div>
 					</div>
