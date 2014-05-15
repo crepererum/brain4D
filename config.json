@@ -16,9 +16,13 @@
             "title": "Hypercube",
             "description": "Volumatic 4D hypercube, 10000 samples"
         },
+        "hypercube_faces": {
+            "title": "Hypercube (faces)",
+            "description": "Faces of a 4D hypercube, 1000 samples per face"
+        },
         "restricted": {
             "title": "Restricted",
-            "description": "Restrict volume [0,1]^3 to x + y + z + w = 2"
+            "description": "Restrict volume [0,1]^3 to x + y + z + w = 2, 4000 samples"
         }
     }
 }
