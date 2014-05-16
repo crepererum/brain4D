@@ -446,9 +446,7 @@ function reloadData() {
 		setBufferData(vertices);
 
 		document.getElementById("datasets").value = set;
-		document.getElementById("prepared_title").innerHTML = config.datasets[set].title;
 		document.getElementById("prepared_description").innerHTML = config.datasets[set].description;
-		document.getElementById("prepared_info").style.display = "";
 	});
 }
 
@@ -504,7 +502,7 @@ function setup() {
 				reset();
 				setBufferData(vertices);
 
-				document.getElementById("prepared_info").style.display = "none";
+				document.getElementById("prepared_description").innerHTML = "";
 			};
 			reader.readAsText(file);
 		}

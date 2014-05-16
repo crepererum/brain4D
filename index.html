@@ -86,33 +86,33 @@
 					<div id="tools">
 						<h1><span class="logoB">b</span><span class="logoR">r</span><span class="logoA">a</span><span class="logoI">i</span><span class="logoN">n</span><span class="logo4">4</span><span class="logoD">D</span></h1>
 						<p class="slogan">nice 4D scatterplot</p>
-						<h2>mode</h2>
-						<ul class="buttonList">
-							<li class="switcher mode1 button"><img src="img/key1.png" alt="keyboard 1" />Move</li>
-							<li class="switcher mode2 button"><img src="img/key2.png" alt="keyboard 2" />Rotate</li>
-							<li class="switcher mode3 button"><img src="img/key3.png" alt="keyboard 3" />Scale</li>
-						</ul>
-						<h2>w rotation axis</h2>
-						<ul class="buttonList">
-							<li class="switcher axis0 button"><img src="img/mouse2.png" alt="middle mouse key" />X</li>
-							<li class="switcher axis1 button"><img src="img/mouse2.png" alt="middle mouse key" />Y</li>
-							<li class="switcher axis2 button"><img src="img/mouse2.png" alt="middle mouse key" />Z</li>
-						</ul>
-						<h2>controls</h2>
-						<img id="controls" src="img/controls.png" alt="description of controls and visual representation" />
-						<ul class="buttonList">
-							<li id="resetButton" class="button"><img src="img/keyR.png" alt="keyboard r" />Reset</li>
-						</ul>
-						<h2>data</h2>
-						<div id="prepared">
+						<div class="panel">
+							<h2>controls</h2>
+							<p class="buttonHeader">mode (<img src="img/key1.png" alt="keyboard 1" />, <img src="img/key2.png" alt="keyboard 2" />, <img src="img/key3.png" alt="keyboard 3" />)</p>
+							<ul class="buttonList">
+								<li class="switcher mode1 button button-3">Move</li><li class="switcher mode2 button button-3">Rotate</li><li class="switcher mode3 button button-3">Scale</li>
+							</ul>
+							<p class="buttonHeader">w rotation axis (<img src="img/mouse2.png" alt="middle mouse key" />)</p>
+							<ul class="buttonList">
+								<li class="switcher axis0 button button-3">X</li><li class="switcher axis1 button button-3">Y</li><li class="switcher axis2 button button-3">Z</li>
+							</ul>
+							<p class="buttonHeader">view</p>
+							<ul class="buttonList">
+								<li id="resetButton" class="button button-1">Reset (<img src="img/keyR.png" alt="keyboard r" />)</li>
+							</ul>
+						</div>
+						<div class="panel">
+							<h2>data</h2>
 							<p>Load prepared data:</p>
 							<select id="datasets"></select>
-							<div id="prepared_info">
-								<h3 id="prepared_title"></h3>
-								<p id="prepared_description"></p>
-							</div>
+							<p id="prepared_description"></p>
+							<span class="or">OR</span>
+							<div id="dropzone">Drop a CSV file here</div>
 						</div>
-						<div id="dropzone">...or drop your CSV file here!</div>
+						<div class="panel">
+							<h2>instructions</h2>
+							<img id="controls" src="img/controls.png" alt="description of controls and visual representation" />
+						</div>
 					</div>
 					<div id="legalPlaceholder"></div>
 					<div id="legal">

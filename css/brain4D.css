@@ -8,15 +8,26 @@ html, body {
 }
 
 .active {
-	opacity: 1.0 !important;
+	color: #aaa !important;
+}
+
+.button-1 {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.button-3 {
+	box-sizing: border-box;
+	width: 33.333%;
 }
 
 .button {
-	background: url(../img/button_background.png);
+	background: #111;
 	border: 1px gray solid;
-	border-radius: 6px;
+	border-left: 0;
 	cursor: pointer;
 	display: inline-block;
+	font-size: 80%;
 	font-weight: bold;
 	line-height: 20px;
 	margin-bottom: 7px;
@@ -28,13 +39,34 @@ html, body {
 }
 
 .button img {
-	margin-right: 6px;
 	pointer-events: none;
 	vertical-align: sub;
 }
 
+.buttonHeader {
+	background: black;
+	border: 1px gray solid;
+	border-bottom: 0;
+	box-sizing: border-box;
+	font-weight: bold;
+	margin-bottom: 0;
+	padding: 2px;
+	text-align: center;
+	width: 100%
+}
+
 .buttonList {
+	margin-top: 0;
 	padding: 0;
+}
+
+.buttonList .button:first-child {
+	border-left: 1px gray solid;
+	border-bottom-left-radius: 6px;
+}
+
+.buttonList .button:last-child {
+	border-bottom-right-radius: 6px;
 }
 
 .errorMessage {
@@ -129,6 +161,42 @@ html, body {
 	text-decoration: none;
 }
 
+.panel .or {
+	display: inline-block;
+	line-height: 20px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	text-align: center;
+	width: 100%;
+}
+
+.panel .or:before, .panel .or:after {
+	border-bottom: gray 1px solid;
+	border-top: gray 1px solid;
+	content: " ";
+	height: 6px;
+	margin-top: 7px;
+	position: absolute;
+	width: 80px;
+}
+
+.panel .or:before {
+	left: 0;
+	margin-left: 10px;
+}
+
+.panel .or:after {
+	margin-right: 10px;
+	right: 0;
+}
+
+.panel select {
+	background: #222;
+	border: 0;
+	color: gray;
+	width: 100%;
+}
+
 .slogan {
 	color: #444;
 	font-style: italic;
@@ -144,7 +212,7 @@ html, body {
 }
 
 .switcher {
-	opacity: 0.5;
+	color: #555;
 }
 
 #browserMessage {
@@ -225,19 +293,9 @@ html, body {
 	width: calc(100% - 230px);
 }
 
-#prepared {
-	margin-bottom: 1em;
-}
-
-#prepared p {
-	margin: 0;
-}
-
-#prepared select {
-	background: #222;
-	border: 0;
-	color: gray;
-	width: 100%;
+#prepared_description {
+	font-size: 90%;
+	font-style: italic;
 }
 
 #sidebar {
@@ -251,6 +309,7 @@ html, body {
 
 #sidebar > div {
 	min-height: calc(100% - 30px);
+	padding: 5px;
 	position: relative;
 }
 
@@ -258,11 +317,5 @@ html, body {
 	margin-bottom: 4px;
 	margin-top: 30px;
 	position: relative;
-}
-
-#tools > h2 {
-	border-bottom: 1px solid gray;
-	margin-bottom: 0;
-	margin-top: 15px;
 }
 
