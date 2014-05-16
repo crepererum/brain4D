@@ -246,7 +246,7 @@ function initGl(vertices) {
 	"use strict";
 	var fragmentShader, vertexShader;
 
-	gl = canvas.getContext("webgl");
+	gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 	updateViewportSize();
 	gl.disable(gl.DEPTH_TEST);
 	gl.enable(gl.BLEND);
