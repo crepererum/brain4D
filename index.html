@@ -14,17 +14,18 @@
 		<script id="shader-fs" type="x-shader/x-fragment">
 			precision mediump float;
 
-			uniform vec2 screenSize;
+			uniform vec2 screenSize; // screen size in pixel
 
-			varying vec4 realPos;
-			varying float projSize;
-			varying vec2 projPos;
+			varying vec4 realPos; // real (unprojected) particle position
+			varying float projSize; // projected particle size
+			varying vec2 projPos; // projected particle position
 
 			void main(void) {
+				// == 1. color and alpha ==
 				float red = 1.0;
 				float blue = 1.0;
 				float green = 1.0;
-				float alpha = (1.0 - abs(realPos[3]));
+				float alpha = max(0.0, 1.0 - abs(realPos[3])) / (1.0 + 0.5 * max(0.0, -realPos[2]));
 				if (realPos[3] > 0.0) {
 					blue = 1.0 - realPos[3];
 					green = 1.0 - realPos[3];
@@ -33,31 +34,45 @@
 					green = 1.0 + realPos[3];
 				}
 
+				// == 2. circle borders + sharpness ==
+				// position in the particle square
 				vec2 pos = mod(gl_FragCoord.xy - (vec2(1.0) + projPos) * screenSize / 2.0 + vec2(projSize / 2.0), vec2(projSize)) - vec2(projSize / 2.0);
+
+				// distance from the particle center
 				float dist_squared = dot(pos, pos);
-				float e1 = projSize / 2.5;
+
+				// point alpha interpolation + sharpness distances
+				float e1 = projSize / (2.0 + 5.0 * realPos[2] * realPos[2]);
 				float e2 = projSize / 2.0;
+
+				// fading of circle borders
 				float fade = 1.0 - smoothstep(e1 * e1, e2 * e2, dist_squared);
 
+				// == 3. final color ==
 				gl_FragColor = vec4(red, green, blue, fade * alpha);
 			}
 		</script>
 		<script id="shader-vs" type="x-shader/x-vertex">
-			attribute vec4 aVertexPosition;
+			attribute vec4 aVertexPosition; // input: particle position before movement/scaling
 
-			uniform mat4 rotMatrix;
-			uniform vec4 transVec;
-			uniform mat4 projMatrix;
+			uniform mat4 rotMatrix; // rotation matrix (real position)
+			uniform vec4 transVec; // translation matrix (real position)
+			uniform mat4 projMatrix; // projection matrix (real to projected)
 
-			varying vec4 realPos;
-			varying float projSize;
-			varying vec2 projPos;
+			varying vec4 realPos; // real (unprojected) particle position
+			varying float projSize; // projected particle size
+			varying vec2 projPos; // projected particle position
 
 			void main(void) {
+				// == 1. calculate real (unprojected) position ==
+				// we cannot use simple matrix multiplication because our real position has 4 (instead of 3) dimensions
 				realPos = rotMatrix * aVertexPosition + transVec;
+
+				// == 2. project particle ==
 				gl_Position = projMatrix * vec4(vec3(realPos), 1.0);
 				projPos = gl_Position.xy;
 
+				// == 3. particle size ==
 				projSize = max(0.0, 20.0 / (4.0 - realPos[2]));
 				gl_PointSize = projSize;
 			}
