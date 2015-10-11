@@ -409,8 +409,8 @@ function eventListenerScroll(deltaX, deltaY) {
 			dVec.set([
 					0.0,
 					0.0,
-					deltaX / 10.0,
-					deltaY / 10.0]);
+					deltaY / 10.0,
+					deltaX / 10.0]);
 			vec4.add(transVec, transVec, dVec);
 			break;
 
@@ -426,8 +426,8 @@ function eventListenerScroll(deltaX, deltaY) {
 
 		case 3:
 			dMatrix = mat4.create();
-			dMatrix[10] += deltaX / 8.0;
-			dMatrix[15] += deltaY / 8.0;
+			dMatrix[10] += deltaY / 8.0;
+			dMatrix[15] += deltaX / 8.0;
 			mat4.multiply(rotMatrix, dMatrix, rotMatrix);
 			vec4.transformMat4(transVec, transVec, dMatrix);
 			break;
