@@ -5,7 +5,7 @@ var wAxis = 2;
 var mouseActive = false;
 var pinchActive = false;
 
-var rotMatrix, screenVec, transVec;
+var rotMatrix, screenVec, transVec, pointSize;
 
 var lastX, lastY;
 var touchPDeltaX, touchPDeltaY;
@@ -131,15 +131,23 @@ function reset() {
 
 function updateViewportSize() {
     "use strict";
+    var devicePixelRatio = window.devicePixelRatio || 1,
+        width = canvas.clientWidth,
+        height = canvas.clientHeight;
 
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    canvas.width = canvas.clientWidth * devicePixelRatio;
+    canvas.height = canvas.clientHeight * devicePixelRatio;
     gl.viewportWidth = canvas.width;
     gl.viewportHeight = canvas.height;
+    gl.devicePixelRatio = devicePixelRatio;
 
     screenVec = vec2.create();
     screenVec[0] = canvas.width;
     screenVec[1] = canvas.height;
+
+    pointSize = 20.0 * devicePixelRatio;
 }
 
 function draw() {
@@ -158,6 +166,7 @@ function draw() {
     gl.uniform4fv(shaderProgram.transVecUnif, transVec);
     gl.uniformMatrix4fv(shaderProgram.projMatrixUnif, false, genProjectionMatrix(gl.viewportWidth, gl.viewportHeight));
     gl.uniform2fv(shaderProgram.screenSizeUnif, screenVec);
+    gl.uniform1f(shaderProgram.pointSizeUnif, pointSize);
     gl.drawArrays(gl.POINTS, 0, vbuffer.numItems);
 
     window.requestAnimationFrame(draw);
@@ -270,6 +279,7 @@ function initGl(vertices) {
     shaderProgram.transVecUnif = gl.getUniformLocation(shaderProgram, "transVec");
     shaderProgram.projMatrixUnif = gl.getUniformLocation(shaderProgram, "projMatrix");
     shaderProgram.screenSizeUnif = gl.getUniformLocation(shaderProgram, "screenSize");
+    shaderProgram.pointSizeUnif = gl.getUniformLocation(shaderProgram, "pointSize");
 
     setBufferData(vertices);
 }
@@ -390,8 +400,8 @@ function eventListenerMove(clientX, clientY) {
 
             case 3:
                 dMatrix = mat4.create();
-                dMatrix[0] = (normPosX + 2.0 * dX / gl.viewportWidth) / normPosX;
-                dMatrix[5] = (normPosY + 2.0 * dY / gl.viewportHeight) / normPosY;
+                dMatrix[0] = (normPosX + 2.0 * dX / gl.viewportWidth * gl.devicePixelRatio) / normPosX;
+                dMatrix[5] = (normPosY + 2.0 * dY / gl.viewportHeight * gl.devicePixelRatio) / normPosY;
                 mat4.multiply(rotMatrix, dMatrix, rotMatrix);
                 vec4.transformMat4(transVec, transVec, dMatrix);
                 break;
