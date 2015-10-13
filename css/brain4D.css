@@ -1,322 +1,322 @@
 /*csslint ids: false, important:false, qualified-headings:false, unique-headings:false*/
 
 html, body {
-	background: black;
-	height: 100%;
-	overflow: hidden;
-	width: 100%;
+    background: black;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
 }
 
 .active {
-	background: #222 !important;
-	color: #aaa !important;
+    background: #222 !important;
+    color: #aaa !important;
 }
 
 .button-1 {
-	box-sizing: border-box;
-	width: 100%;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .button-3 {
-	box-sizing: border-box;
-	width: 33.333%;
+    box-sizing: border-box;
+    width: 33.333%;
 }
 
 .button {
-	background: #111;
-	border: 1px gray solid;
-	border-left: 0;
-	cursor: pointer;
-	display: inline-block;
-	font-size: 80%;
-	font-weight: bold;
-	line-height: 20px;
-	margin-bottom: 7px;
-	min-width: 16px;
-	padding: 5px 8px;
-	position: relative;
-	text-align: center;
-	z-index: 5;
+    background: #111;
+    border: 1px gray solid;
+    border-left: 0;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 80%;
+    font-weight: bold;
+    line-height: 20px;
+    margin-bottom: 7px;
+    min-width: 16px;
+    padding: 5px 8px;
+    position: relative;
+    text-align: center;
+    z-index: 5;
 }
 
 .button img {
-	pointer-events: none;
-	vertical-align: sub;
+    pointer-events: none;
+    vertical-align: sub;
 }
 
 .buttonHeader {
-	background: black;
-	border: 1px gray solid;
-	border-bottom: 0;
-	box-sizing: border-box;
-	font-weight: bold;
-	margin-bottom: 0;
-	padding: 2px;
-	text-align: center;
-	width: 100%
+    background: black;
+    border: 1px gray solid;
+    border-bottom: 0;
+    box-sizing: border-box;
+    font-weight: bold;
+    margin-bottom: 0;
+    padding: 2px;
+    text-align: center;
+    width: 100%
 }
 
 .buttonList {
-	margin-top: 0;
-	padding: 0;
+    margin-top: 0;
+    padding: 0;
 }
 
 .buttonList .button:first-child {
-	border-left: 1px gray solid;
-	border-bottom-left-radius: 6px;
+    border-left: 1px gray solid;
+    border-bottom-left-radius: 6px;
 }
 
 .buttonList .button:last-child {
-	border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .errorMessage {
-	background: rgb(63, 0, 0) !important;
-	background: rgba(63, 0, 0, 0.7) !important;
-	color: red !important;
-	z-index: 25 !important;
+    background: rgb(63, 0, 0) !important;
+    background: rgba(63, 0, 0, 0.7) !important;
+    color: red !important;
+    z-index: 25 !important;
 }
 
 .errorMessage a {
-	color: red !important;
+    color: red !important;
 }
 
 .logoB, .logoR, .logoA, .logoI, .logoN, .logo4, .logoD {
-	text-shadow: 0 0 2px #000;
+    text-shadow: 0 0 2px #000;
 }
 
 .logoB, .logoR, .logoA, .logoI, .logoN {
-	font-style: italic;
+    font-style: italic;
 }
 
 .logoB:before, .logoD:after {
-	color: #222;
-	content: "-";
-	margin: 0 8px;
+    color: #222;
+    content: "-";
+    margin: 0 8px;
 }
 
 .logoB {
-	color: rgb(255, 127, 127);
-	color: rgba(255, 127, 127, 0.5);
-	text-shadow: 4px 0 0 #222;
+    color: rgb(255, 127, 127);
+    color: rgba(255, 127, 127, 0.5);
+    text-shadow: 4px 0 0 #222;
 }
 
 .logoR {
-	color: rgb(31, 31, 128);
-	margin-right: -9px;
+    color: rgb(31, 31, 128);
+    margin-right: -9px;
 }
 
 .logoA {
-	color: rgb(31, 31, 128);
+    color: rgb(31, 31, 128);
 }
 
 .logoI {
-	color: rgb(127, 31, 31);
-	position: absolute;
+    color: rgb(127, 31, 31);
+    position: absolute;
 }
 
 .logoN {
-	color: rgb(127, 31, 31);
-	position: relative;
-	z-index: 2;
+    color: rgb(127, 31, 31);
+    position: relative;
+    z-index: 2;
 }
 
 .logo4 {
-	color: rgb(255, 255, 255);
-	color: rgba(255, 255, 255, 0.8);
-	margin-right: -10px;
-	position: relative;
-	top: 5px;
+    color: rgb(255, 255, 255);
+    color: rgba(255, 255, 255, 0.8);
+    margin-right: -10px;
+    position: relative;
+    top: 5px;
 }
 
 .logoD {
-	color: rgb(255, 255, 255);
-	color: rgba(255, 255, 255, 0.8);
-	position: relative;
-	z-index: 2;
+    color: rgb(255, 255, 255);
+    color: rgba(255, 255, 255, 0.8);
+    position: relative;
+    z-index: 2;
 }
 
 .message {
-	background: grey;
-	height: 100%;
-	left: 0;
-	position: fixed;
-	text-align: center;
-	top: 0;
-	width: 100%;
-	z-index: -10;
+    background: grey;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: -10;
 }
 
 .message h2 {
-	margin-top: 50px;
+    margin-top: 50px;
 }
 
 .message > div {
-	display: inline-block;
-	max-width: 600px;
+    display: inline-block;
+    max-width: 600px;
 }
 
 .message a {
-	color: black;
-	font-weight: bold;
-	text-decoration: none;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .panel .or {
-	display: inline-block;
-	line-height: 20px;
-	margin-bottom: 10px;
-	margin-top: 10px;
-	text-align: center;
-	width: 100%;
+    display: inline-block;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
 }
 
 .panel .or:before, .panel .or:after {
-	border-bottom: gray 1px solid;
-	border-top: gray 1px solid;
-	content: " ";
-	height: 6px;
-	margin-top: 7px;
-	position: absolute;
-	width: 80px;
+    border-bottom: gray 1px solid;
+    border-top: gray 1px solid;
+    content: " ";
+    height: 6px;
+    margin-top: 7px;
+    position: absolute;
+    width: 80px;
 }
 
 .panel .or:before {
-	left: 0;
-	margin-left: 10px;
+    left: 0;
+    margin-left: 10px;
 }
 
 .panel .or:after {
-	margin-right: 10px;
-	right: 0;
+    margin-right: 10px;
+    right: 0;
 }
 
 .panel select {
-	background: #222;
-	border: 0;
-	color: gray;
-	width: 100%;
+    background: #222;
+    border: 0;
+    color: gray;
+    width: 100%;
 }
 
 .slogan {
-	color: #444;
-	font-style: italic;
-	margin-top: 0;
+    color: #444;
+    font-style: italic;
+    margin-top: 0;
 }
 
 .slogan:before {
-	content: "(";
+    content: "(";
 }
 
 .slogan:after {
-	content: ")";
+    content: ")";
 }
 
 .switcher {
-	color: #555;
+    color: #555;
 }
 
 #browserMessage {
-	z-index: 21 !important;
+    z-index: 21 !important;
 }
 
 #clear {
-	clear: both;
+    clear: both;
 }
 
 #container {
-	height: 100%;
-	width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 #controls {
-	display: block;
-	margin-left: 4px;
+    display: block;
+    margin-left: 4px;
 }
 
 #crosshair {
-	background: url(../img/crosshair.png);
-	height: 20px;
-	left: calc(50% - 10px);
-	pointer-events: none;
-	position: absolute;
-	top: calc(50% - 10px);
-	width: 20px;
+    background: url(../img/crosshair.png);
+    height: 20px;
+    left: calc(50% - 10px);
+    pointer-events: none;
+    position: absolute;
+    top: calc(50% - 10px);
+    width: 20px;
 }
 
 #dropzone {
-	background: #222;
-	display: none;
-	line-height: 60px;
-	text-align: center;
-	width: 100%;
+    background: #222;
+    display: none;
+    line-height: 60px;
+    text-align: center;
+    width: 100%;
 }
 
 #glcanvas {
-	height: 100%;
-	width: 100%;
+    height: 100%;
+    width: 100%;
 }
 
 #legal {
-	bottom: 0;
-	color: #444;
-	font-size: 80%;
-	height: 50px;
-	margin: 4px 10px;
-	position: absolute;
-	right: 0;
-	text-align: right;
+    bottom: 0;
+    color: #444;
+    font-size: 80%;
+    height: 50px;
+    margin: 4px 10px;
+    position: absolute;
+    right: 0;
+    text-align: right;
 }
 
 #legal a {
-	color: #444;
-	font-weight: bold;
-	text-decoration: none;
+    color: #444;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 #legal p {
-	margin: 0;
+    margin: 0;
 }
 
 #legalPlaceholder {
-	height: 80px;
-	width: 100%;
+    height: 80px;
+    width: 100%;
 }
 
 #loadMessage {
-	z-index: 20 !important;
+    z-index: 20 !important;
 }
 
 #main {
-	float: left;
-	height: 100%;
-	position: relative;
-	width: calc(100% - 230px);
+    float: left;
+    height: 100%;
+    position: relative;
+    width: calc(100% - 230px);
 }
 
 #prepared_description {
-	font-size: 90%;
-	font-style: italic;
+    font-size: 90%;
+    font-style: italic;
 }
 
 #sidebar {
-	background: black;
-	color: gray;
-	float: left;
-	height: 100%;
-	overflow-y: scroll;
-	width: 230px;
+    background: black;
+    color: gray;
+    float: left;
+    height: 100%;
+    overflow-y: scroll;
+    width: 230px;
 }
 
 #sidebar > div {
-	min-height: calc(100% - 30px);
-	padding: 5px;
-	position: relative;
+    min-height: calc(100% - 30px);
+    padding: 5px;
+    position: relative;
 }
 
 #tools > h1 {
-	margin-bottom: 4px;
-	margin-top: 30px;
-	position: relative;
+    margin-bottom: 4px;
+    margin-top: 30px;
+    position: relative;
 }
 
